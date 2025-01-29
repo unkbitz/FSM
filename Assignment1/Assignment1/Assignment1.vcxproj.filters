@@ -42,9 +42,6 @@
     <ClCompile Include="GoHomeAndSleepTilRested.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="FarmerGlobalState.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="GoHomeAndEat.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -58,6 +55,18 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="VisitMarketAndBuy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StateFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BuyPie.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BuyAle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GameTime.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -86,9 +95,6 @@
     <ClInclude Include="GoHomeAndSleepTilRested.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="FarmerGlobalState.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="GoHomeAndEat.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -102,6 +108,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="VisitMarketAndBuy.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StateFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BuyAle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BuyPie.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GameTime.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

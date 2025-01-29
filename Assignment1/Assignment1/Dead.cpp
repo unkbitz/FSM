@@ -25,14 +25,20 @@ void Dead::Enter(Farmer* pFarmer)
 void Dead::Execute(Farmer* pFarmer)
 {
     // Dead men do nothing!
+    return;
 }
 
-void Dead::Exit(Farmer* pFarmer)
+void Dead::Exit(Farmer* pFarmer, std::string nextState)
 {
     // No coming back from the dead!
 }
 
-float Dead::GetTaskDuration() const
+std::string Dead::GetEvent(Farmer* pFarmer)
 {
-    return 0.0f;
+    return std::string();
+}
+
+int Dead::GetTaskDuration() const
+{
+    return 0;
 }

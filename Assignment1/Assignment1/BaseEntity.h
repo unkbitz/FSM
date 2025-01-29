@@ -1,5 +1,5 @@
 #pragma once
-
+#include "GameTime.h"
 class BaseEntity
 {
 private:
@@ -13,6 +13,6 @@ public:
 		SetID(id);
 	}
 	virtual ~BaseEntity() {}
-	virtual void Update() = 0;
+	virtual void Update(GameTime gameTime) = 0;
 	int ID()const { return m_ID; }
  };

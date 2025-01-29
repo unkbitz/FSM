@@ -1,10 +1,7 @@
 #include "VisitMarketAndSell.h"
+#include "StateFactory.h"
 #include "Farmer.h"
 #include <iostream>
-#include "AtThePubWithFriends.h"
-#include "AtTheFieldsHarvesting.h"
-#include "EnterBarnAndMilkTheCows.h"
-#include "GoHomeAndSleepTilRested.h"
 
 VisitMarketAndSell* VisitMarketAndSell::Instance()
 {
@@ -16,7 +13,6 @@ void VisitMarketAndSell::Enter(Farmer* pFarmer)
 {
 	if (pFarmer->GetLocation() != &market)
 	{
-		StartTaskTimer(0.5f);
 		std::cout << pFarmer->GetName() << " takes the horse cart to the market" << std::endl;
 		pFarmer->ChangeLocation(&market);
 	}
@@ -25,54 +21,68 @@ void VisitMarketAndSell::Enter(Farmer* pFarmer)
 void VisitMarketAndSell::Execute(Farmer* pFarmer)
 {
 	if (pFarmer->GetGoodsInCart() > 0)
-	{
-		int earnedCoins = 2 * pFarmer->GetGoodsInCart();
-		StartTaskTimer(0.5f);
-		pFarmer->EmptyCart();
-		std::cout << pFarmer->GetName() << " is selling goods." << std::endl;
-		pFarmer->EarnGoldCoins(earnedCoins);
-		std::cout << pFarmer->GetName() << " has earned " << earnedCoins << " coins of gold." << std::endl;
-	}
-	StartTaskTimer(0.5f);
-	std::cout << pFarmer->GetName() << " has no more goods to sell." << std::endl;
-
-	if (pFarmer->BarnHasResource())
-	{
-		StartTaskTimer(0.5f);
-		std::cout << pFarmer->GetName() << ": 'Better get home and work some more!'" << std::endl;
-		pFarmer->ChangeState(EnterBarnAndMilkTheCows::Instance());
-	}
-	else if (pFarmer->FieldHasResource())
-	{
-		StartTaskTimer(0.5f);
-		std::cout << pFarmer->GetName() << ": 'Better get home and work some more!'" << std::endl;
-		std::cout << pFarmer->GetName() << ": 'Since the cows were out of milk earlier, I'll do some harvesting!'" << std::endl;
-		pFarmer->ChangeState(AtTheFieldsHarvesting::Instance());
-	}
+		{
+			int earnedCoins = 2 * pFarmer->GetGoodsInCart();
+			pFarmer->EmptyCart();
+			pFarmer->EarnGoldCoins(earnedCoins);
+			std::cout << pFarmer->GetName() << " has earned " << earnedCoins << " coins of gold from selling goods." << std::endl;
+		}
 	else
 	{
-		if (pFarmer->GetEnergy() < 6) 
+		std::cout << pFarmer->GetName() << ": 'Oh, I've got nothing to sell'" << std::endl;
+	}
+}
+
+std::string VisitMarketAndSell::GetEvent(Farmer* pFarmer)
+{
+	std::string event = "Stay";
+	if (pFarmer->Thirsty())
+	{
+		std::cout << pFarmer->GetName() << ": 'I am thirsty, I need to go home and drink'" << std::endl;
+		event = "Thirsty";
+	}
+	else if (pFarmer->Hungry())
+	{
+		std::cout << pFarmer->GetName() << ": 'I am hungry, I need to go home and eat'" << std::endl;
+		event = "Hungry";
+	}
+	else if (pFarmer->Tired())
+	{
+		std::cout << pFarmer->GetName() << ": 'I am tired, I need to go home and sleep'" << std::endl;
+		event = "Tired";
+	}
+	if (pFarmer->GetGoodsInCart() < 1)
+	{
+		if (pFarmer->BarnHasResource())
 		{
-			StartTaskTimer(0.5f);
-			std::cout << pFarmer->GetName() << ": 'Done for the day! I am to tierd to visit the pub tonight.'" << std::endl;
-			pFarmer->ChangeState(GoHomeAndSleepTilRested::Instance());
+			std::cout << pFarmer->GetName() << ": 'Time to get back to work! I think some cows still needs to be milked.'" << std::endl;
+			event = "SoldAll->Milk";
+		}
+		else if (pFarmer->FieldHasResource())
+		{
+
+			std::cout << pFarmer->GetName() << ": 'Time to get back to work! I think there are crops left in the field'" << std::endl;
+			event = "SoldAll->Crops";
 		}
 		else
 		{
-			StartTaskTimer(0.5f);
-			std::cout << pFarmer->GetName() << ": 'Finially! Some money and time to spend on having fun!'" << std::endl;
-			pFarmer->ChangeState(AtThePubWithFriends::Instance());
+			std::cout << pFarmer->GetName() << ": 'Finally I am done for the day!'" << std::endl;
+			event = "SoldAll";
 		}
 	}
+	return event;
 }
 
-void VisitMarketAndSell::Exit(Farmer* pFarmer)
+void VisitMarketAndSell::Exit(Farmer* pFarmer, std::string nextState)
 {
-	StartTaskTimer(0.5f);
-	std::cout << pFarmer->GetName() << " is Leaving the market" << std::endl;
+	if (nextState != "VisitTheMarketAndBuy")
+	{
+		std::cout << pFarmer->GetName() << " is Leaving the market" << std::endl;
+	}
+
 }
 
-float VisitMarketAndSell::GetTaskDuration() const
+int VisitMarketAndSell::GetTaskDuration() const
 {
-	return 2.0f;
+	return 20;
 }

@@ -1,7 +1,5 @@
 #include "GoHomeAndSleepTilRested.h"
-#include "EnterBarnAndMilkTheCows.h"
-#include "GoHomeAndEat.h"
-#include "QuenchThirst.h"
+#include "StateFactory.h"
 #include "Farmer.h"
 #include <iostream>
 
@@ -15,55 +13,68 @@ void GoHomeAndSleepTilRested::Enter(Farmer* pFarmer)
 {
     if (pFarmer->GetLocation() != &cottage)
     {
-        StartTaskTimer(0.5f);
-        std::cout << pFarmer->GetName() << ": Walking to the cottage" << std::endl;
+        std::cout << pFarmer->GetName() << " is Walking to the cottage" << std::endl;
         pFarmer->ChangeLocation(&cottage);
     }
 }
 
 void GoHomeAndSleepTilRested::Execute(Farmer* pFarmer)
 {
-    if (pFarmer->Tierd())
-    {
-        while (pFarmer->GetEnergy() < 33)
-        {
-            StartTaskTimer(2.0f);
-            pFarmer->Sleep(8); // Restore energy gradually
-            std::cout << pFarmer->GetName() << " is sleeping..." << std::endl;
-        }
-        pFarmer->ChangeLocation(&field);
-        pFarmer->GetLocation()->ReplennishReshources(10);
-        pFarmer->GetLocation()->SetHasResources();
-        pFarmer->SetFieldHasResource(true);
-        pFarmer->ChangeLocation(&barn);
-        pFarmer->GetLocation()->ReplennishReshources(10);
-        pFarmer->GetLocation()->SetHasResources();
-        pFarmer->SetBarnHasResource(true);
-        pFarmer->ChangeLocation(&cottage);
-    }
-    StartTaskTimer(0.5f);
-    std::cout << pFarmer->GetName() << ": 'Good morning! Time to get to work again!'" << std::endl;
-    if (pFarmer->GetHunger() > 25)
-    {
-        pFarmer->ChangeState(GoHomeAndEat::Instance());
-    }
-    else if (pFarmer->GetThirst() > 15)
-    {
-        pFarmer->ChangeState(QuenchThirst::Instance());
-    }
-    else
-    {
-        pFarmer->ChangeState(EnterBarnAndMilkTheCows::Instance());
-    }
+	if (pFarmer->GetHunger() > 15 )
+	{
+		std::cout << pFarmer->GetName() << " is sleeping... But not so well..." << std::endl;
+		pFarmer->Sleep(2);
+	}
+	else if (pFarmer->GetEnergy() < 80)
+	{
+		std::cout << pFarmer->GetName() << " is sleeping..." << std::endl;
+		pFarmer->Sleep(3);
+	}
+	else
+	{
+		std::cout << pFarmer->GetName() << " is sleeping..." << std::endl;
+	}
 }
 
-void GoHomeAndSleepTilRested::Exit(Farmer* pFarmer)
+std::string GoHomeAndSleepTilRested::GetEvent(Farmer* pFarmer)
 {
-    StartTaskTimer(0.5f);
-    std::cout << pFarmer->GetName() << ": Leaving the cottage" << std::endl;
+	std::string event = "Stay";
+	if (pFarmer->GetEnergy() > 77)
+	{
+		if (pFarmer->Thirsty())
+		{
+			std::cout << pFarmer->GetName() << ": 'I am thirsty, I need to drink'" << std::endl;
+			event = "Thirsty";
+		}
+		else if (pFarmer->Hungry())
+		{
+			std::cout << pFarmer->GetName() << ": 'I am hungry, I need to eat'" << std::endl;
+			event = "Hungry";
+		}
+		else if (pFarmer->CartIsFull())
+		{
+			std::cout << pFarmer->GetName() << ": 'My horse cart is full, better get to the market and sell some goods!'" << std::endl;
+			event = "CartFull";
+		}
+		else
+		{
+			std::cout << pFarmer->GetName() << ": 'Good morning!'" << std::endl;
+			event = "Rested";
+		}
+	}
+	return event;
 }
 
-float GoHomeAndSleepTilRested::GetTaskDuration() const
+void GoHomeAndSleepTilRested::Exit(Farmer* pFarmer, std::string nextState)
 {
-    return 2.0f;
+	std::cout << pFarmer->GetName() << ": 'Time to get to work again!'" << std::endl;
+	if (nextState != "GoHomeAndEat")
+	{
+		std::cout << pFarmer->GetName() << " is Leaving the cottage" << std::endl;
+	}
+}
+
+int GoHomeAndSleepTilRested::GetTaskDuration() const
+{
+    return 30;
 }

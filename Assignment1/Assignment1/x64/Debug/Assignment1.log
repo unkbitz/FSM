@@ -1,2 +1,5 @@
-﻿  Location.cpp
-  Assignment1.vcxproj -> C:\Users\Sara_\source\repos\Assignment1\x64\Debug\Assignment1.exe
+﻿  GoHomeAndSleepTilRested.cpp
+C:\Users\Sara_\Documents\GitHub\FSM\Assignment1\Assignment1\Farmer.h(71,51): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+  (compiling source file 'GoHomeAndSleepTilRested.cpp')
+  
+  Assignment1.vcxproj -> C:\Users\Sara_\Documents\GitHub\FSM\Assignment1\x64\Debug\Assignment1.exe

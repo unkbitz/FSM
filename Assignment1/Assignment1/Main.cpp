@@ -4,47 +4,68 @@
 #include <memory>
 #include <vector>
 #include "Location.h"
+#include "GameTime.h"
 #include "Farmer.h"
 #include "Dead.h"
-#include "EnterBarnAndMilkTheCows.h"
-
 
 int main()
 {
     std::vector<std::unique_ptr<Farmer>> farmers;
-    Farmer farmer1(1, "Farmer Jenny");
-    Farmer farmer2(2, "Farmer Hank");
-    Farmer farmer3(3, "Farmer Hanna");
-    Farmer farmer4(4, "Farmer Jim");
+    GameTime gameTime(6, 0);
 
-    farmers.emplace_back(std::make_unique<Farmer>(farmer1));
-    farmers.emplace_back(std::make_unique<Farmer>(farmer2));
-    farmers.emplace_back(std::make_unique<Farmer>(farmer3));
-    farmers.emplace_back(std::make_unique<Farmer>(farmer4));
+    farmers.emplace_back(std::make_unique<Farmer>(1, "Farmer Jenny", 3));
+    farmers.emplace_back(std::make_unique<Farmer>(2, "Farmer Hank", 5));
+    farmers.emplace_back(std::make_unique<Farmer>(3, "Farmer Hanna", 8));
+    farmers.emplace_back(std::make_unique<Farmer>(4, "Farmer Jim", 7));
 
-    for (auto& farmer : farmers)
-    {
-        farmer->ChangeState(EnterBarnAndMilkTheCows::Instance());
-    }
+    int numbersOfDeadFarmers = 0;
+    std::string TimeOfDeath1 = "Time of death for the first farmer: ";
+    std::string TimeOfDeath2 = "Time of death for the second farmer: ";
+    std::string TimeOfDeath3 = "Time of death for the third farmer: ";
+    std::string TimeOfDeath4 = "Time of death for the fourth farmer: ";
 
     // Game loop
-    for (int i = 0; i < 100; ++i) {
-        //std::cout << "Current state: " << farmer1.GetNameOfCurrentState() << std::endl;
-        //std::cout << "Current Thirst level:" << farmer1.GetThirst() << std::endl;
-        //std::cout << "Current hunger level:" << farmer1.GetHunger() << std::endl;
-        //std::cout << "Current energy level:" << farmer1.GetEnergy() << std::endl;
-        //std::cout << "Current number of goods in cart:" << farmer1.GetGoodsInCart() << std::endl;
-        std::cout << "Game loop iteration: " << i + 1 << std::endl;
+    while (true) 
+    {
+        gameTime.Update();
+        std::cout << "\033[33mCurrent Time: " << gameTime.GetTimeString() << "\033[0m" << std::endl;
 
         for (auto& farmer : farmers)
         {
-            farmer->Update();  // Pass elapsed time to update
-            std::this_thread::sleep_for(std::chrono::milliseconds(100));  // Simulate real-time pacing
-            std::cout << std::endl;
-            if (farmer->GetHunger() > 34 || farmer1.GetThirst() > 23) {
-                std::cout << "Hungerlevel: " << farmer->GetHunger() << std::endl << "Thirstlevel: " << farmer->GetThirst() << std::endl;
-                farmer->ChangeState(Dead::Instance());
+            std::string nameOfCurrentState = farmer->GetNameOfCurrentState();
+            //std::cout << "Current state: " << nameOfCurrentState << std::endl;
+            if (nameOfCurrentState != "Dead")
+            {
+                //std::cout << "Current Thirst level:" << farmer->GetThirst() << std::endl;
+                //std::cout << "Current hunger level:" << farmer->GetHunger() << std::endl;
+                //std::cout << "Current energy level:" << farmer->GetEnergy() << std::endl;
+                //std::cout << "Current gold level:" << farmer->GetGoldCoins() << std::endl;
+                //std::cout << "Current number of goods in cart:" << farmer->GetGoodsInCart() << std::endl;
+                farmer->Update(gameTime);
+                std::this_thread::sleep_for(std::chrono::milliseconds(100));
                 std::cout << std::endl;
+                if (farmer->GetHunger() > 38 || farmer->GetThirst() > 28) {
+                    numbersOfDeadFarmers++;
+                    if (numbersOfDeadFarmers == 1)
+                    {
+                        TimeOfDeath1 += gameTime.GetTimeString();
+                    }
+                    if (numbersOfDeadFarmers == 2)
+                    {
+                        TimeOfDeath2 += gameTime.GetTimeString();
+                    }
+                    if (numbersOfDeadFarmers == 3)
+                    {
+                        TimeOfDeath3 += gameTime.GetTimeString();
+                    }
+                    if (numbersOfDeadFarmers == 4)
+                    {
+                        TimeOfDeath4 += gameTime.GetTimeString();
+                    }
+                    std::cout << "Hungerlevel: " << farmer->GetHunger() << std::endl << "Thirstlevel: " << farmer->GetThirst() << std::endl;
+                    farmer->ChangeState(Dead::Instance());
+                    std::cout << std::endl;
+                }
             }
         }
 
@@ -55,7 +76,7 @@ int main()
                 farmers.end(),
                 [](const std::unique_ptr<Farmer>& farmer)
                 {
-                    return farmer->GetNameOfCurrentState() == "class Dead";
+                    return farmer->GetNameOfCurrentState() == "Dead";
                 }
             ),
             farmers.end()
@@ -64,6 +85,10 @@ int main()
         // Exit if all farmers are dead
         if (farmers.empty()) {
             std::cout << "All farmers have died. Ending simulation." << std::endl;
+            std::cout << TimeOfDeath1 << std::endl;
+            std::cout << TimeOfDeath2 << std::endl;
+            std::cout << TimeOfDeath3 << std::endl;
+            std::cout << TimeOfDeath4 << std::endl;
             break;
         }
     }

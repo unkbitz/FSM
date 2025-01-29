@@ -15,7 +15,7 @@ struct StateTransition {
 class Farmer : public BaseEntity
 {
 private:
-	static const std::vector<StateTransition> stateTransitionTable;
+	static const std::vector<StateTransition> m_stateTransitionTable;
 	StateMachine<Farmer>* m_pStateMachine;
 	std::string m_name;
 	//std::string m_cowName;
@@ -27,8 +27,7 @@ private:
 	//a pointer to an instance of a State
 	State<Farmer>* m_pCurrentState;
 	State<Farmer>* m_pPreviousState;
-	State<Farmer>* m_pGlobalState;
-	
+
 	bool m_fieldHasResource;
 	bool m_barnHasResource;
 	int m_iGoldCoins;
@@ -39,17 +38,17 @@ private:
 	float m_fEnergy;//the lower the value, the more tired the agent
 
 public:
-	Farmer(int ID, std::string name);
-	~Farmer() { delete m_pStateMachine; }
+	Farmer(int ID, std::string name, int startCondition);
+	~Farmer();
 
-	void Update();
+	void Update(GameTime gameTime);
 	void ChangeState(State<Farmer>* pNewState);
-	void RevertToPreviousState();
 	void ChangeLocation(Location* newLocation);
 	std::string getNextState(const std::string& currentState, const std::string& event);
 
 	// Getters
-	StateMachine<Farmer>* GetFSM()const { return m_pStateMachine; }
+	StateMachine<Farmer>* GetFSM() const { return m_pStateMachine; }
+	static std::vector<StateTransition> GetStateTransitionTable() { return m_stateTransitionTable; }
 	Location* GetLocation() const { return m_Location; }
 	State<Farmer>*  GetPreviousState() const { return m_pPreviousState; }
 	std::string GetName() const { return m_name; }
@@ -63,24 +62,25 @@ public:
 
 	// Setters
 	void SetName(const std::string& name) { m_name = name; }
-	void AddGoodsToCart();
-	void DecreaseEnergy(float energyLoss);
-	void EmptyCart();
-	void SetBarnHasResource(bool hasResource);
-	void SetFieldHasResource(bool hasResource);
-	void Drink(int thirstDecreased);
-	void Sleep(int energyRegained);
-	void Eat(int hungerDeccreased);
-	void IncreaseThirst(float fluidLoss);
-	void IncreaseHunger(float kcalLoss);
-	void EarnGoldCoins(int coinsEarned);
-	void SpendGoldCoins(int coinsSpent);
+	void AddGoodsToCart() { m_icart += 1; }
+	void DecreaseEnergy(float energyLoss) { m_fEnergy -= energyLoss; }
+	void EmptyCart() { m_icart = 0; }
+	void SetBarnHasResource(bool hasResource) { m_barnHasResource = hasResource; }
+	void SetFieldHasResource(bool hasResource) { m_fieldHasResource = hasResource; }
+	void Drink() { m_fThirst = 0; }
+	void SetThirst(int newThirstLevel) { m_fThirst = newThirstLevel; }
+	void Sleep(int energyRegained) { m_fEnergy += energyRegained; }
+	void Eat(int hungerDeccreased) { m_fHunger -= hungerDeccreased; }
+	void IncreaseThirst(float fluidLoss) { m_fThirst += fluidLoss; }
+	void IncreaseHunger(float kcalLoss) { m_fHunger += kcalLoss; }
+	void EarnGoldCoins(int coinsEarned) { m_iGoldCoins += coinsEarned; }
+	void SpendGoldCoins(int coinsSpent) { m_iGoldCoins -= coinsSpent; }
 
 	// Bools
 	bool CartIsFull() const;
-	bool Thirsty() const { return m_fThirst > 18; }
-	bool Tierd() const { return m_fEnergy < 5; }
-	bool Hungry() const { return m_fHunger > 28; }
+	bool Thirsty() const { return m_fThirst > 23; }
+	bool Tired() const { return m_fEnergy < 5; }
+	bool Hungry() const { return m_fHunger > 32; }
 	bool FieldHasResource() const { return m_fieldHasResource; }
 	bool BarnHasResource() const { return m_barnHasResource; }
 };

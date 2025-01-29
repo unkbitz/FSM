@@ -10,6 +10,9 @@ private:
     int m_y;
     bool m_hasResources;
     int m_iResourcesLeft;
+    int m_iFood;
+    int m_iCrops;
+    int m_iMilk;
 
 public:
     // Constructor
@@ -21,14 +24,18 @@ public:
     int GetY() const;
     int GetResources() const;
     bool HasResources() const;
+    int GetFoodMax() const;
+    int GetCropsMax() const;
+    int GetMilkMax() const;
 
     // Setters
     void SetHasResources();
     void DecreaseResources();
-    void ReplennishReshources(int amopunt);
+    void IncreaseResources(int amount);
+    void ReplennishReshources(int amount);
 
     // Method to calculate distance between two locations
-    double Distance(const Location& other) const;
+    int GetTravelTimeTo(const Location& other) const;
 };
 
 extern Location cottage;

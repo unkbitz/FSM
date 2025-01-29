@@ -1,5 +1,7 @@
 #include <iostream>
+#include <algorithm> // for std::min
 #include "AtThePubWithFriends.h"
+#include "StateFactory.h"
 
 AtThePubWithFriends* AtThePubWithFriends::Instance()
 {
@@ -11,42 +13,69 @@ void AtThePubWithFriends::Enter(Farmer* pFarmer)
 {
 	if (pFarmer->GetLocation() != &pub)
 	{
-		StartTaskTimer(0.5);
-		std::cout << pFarmer->GetName() << "is Riding to the pub" << std::endl;
+		if (pFarmer->GetThirst() < 24)
+		{
+			int currentThirst = pFarmer->GetThirst();
+			int newThirst = std::min(currentThirst + 18, 25);
+			pFarmer->SetThirst(newThirst);
+		}
+		std::cout << pFarmer->GetName() << " is Riding to the pub" << std::endl;
 		pFarmer->ChangeLocation(&pub);
 	}
 }
 
+
 void AtThePubWithFriends::Execute(Farmer* pFarmer)
 {
-		pFarmer->DecreaseEnergy(1);
-		pFarmer->IncreaseHunger(3);
-		pFarmer->IncreaseThirst(4);
-		StartTaskTimer(1.5f);
-		std::cout << pFarmer->GetName() << " is having fun with his friends at the pub!" << std::endl;
-		//while(pFarmer->Thirsty())
-		//{
-		//	StartTaskTimer(1.5f);
-		//	pFarmer->Drink(5);
-		//	std::cout << pFarmer->GetName() << " drinks ale!" << std::endl;
-		//	pFarmer->IncreaseHunger(2);
-		//}
-		//while (pFarmer->Hungry())
-		//{
-		//	StartTaskTimer(2.0f);
-		//	pFarmer->Eat(10);
-		//	std::cout << pFarmer->GetName() << " eats pie!" << std::endl;
-		//	pFarmer->IncreaseThirst(3);
-		//}
+	std::cout << pFarmer->GetName() << " is at the pub having fun!" << std::endl;
 }
 
-void AtThePubWithFriends::Exit(Farmer* pFarmer)
+std::string AtThePubWithFriends::GetEvent(Farmer* pFarmer)
 {
-	StartTaskTimer(0.5f);
-	std::cout << pFarmer->GetName() << " is Leaving the pub" << std::endl;
+	std::string event = "TimeForFun";
+	if (pFarmer->Thirsty())
+	{
+		if (pFarmer->GetGoldCoins() < 4)
+		{
+			std::cout << pFarmer->GetName() << ": 'I am thirsty, but can't afford ale. I need to go home.'" << std::endl;
+			event = "Thirsty";
+		}
+		else
+		{
+			std::cout << pFarmer->GetName() << ": 'I am thirsty'" << std::endl;
+			event = "ThirstyAndRich";
+		}
+	}
+	else if (pFarmer->Hungry())
+	{
+		if (pFarmer->GetGoldCoins() < 6)
+		{
+			std::cout << pFarmer->GetName() << ": 'I am hungry, but can't afford pie. I need to go home'" << std::endl;
+			event = "Hungry";
+		}
+		else
+		{
+			std::cout << pFarmer->GetName() << ": 'I am hungry'" << std::endl;
+			event = "HungryAndRich";
+		}
+	}
+	else if (pFarmer->Tired())
+	{
+		std::cout << pFarmer->GetName() << ": 'I am tired, I need to sleep'" << std::endl;
+		event = "Tired";
+	}
+	return event;
 }
 
-float AtThePubWithFriends::GetTaskDuration() const
+void AtThePubWithFriends::Exit(Farmer* pFarmer, std::string nextState)
 {
-	return 1.0f;
+	if (nextState != "BuyAle" && nextState != "BuyPie")
+	{
+		std::cout << pFarmer->GetName() << " is Leaving the pub" << std::endl;
+	}
+}
+
+int AtThePubWithFriends::GetTaskDuration() const
+{
+	return 10;
 }

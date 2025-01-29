@@ -1,6 +1,5 @@
 #include "AtTheFieldsHarvesting.h"
-#include "VisitMarketAndSell.h"
-#include "EnterBarnAndMilkTheCows.h"
+#include "StateFactory.h"
 #include <iostream>
 
 AtTheFieldsHarvesting* AtTheFieldsHarvesting::Instance()
@@ -13,7 +12,6 @@ void AtTheFieldsHarvesting::Enter(Farmer* pFarmer)
 {
 	if (pFarmer->GetLocation() != &field)
 	{
-		StartTaskTimer(0.5f);
 		std::cout << pFarmer->GetName() << " is Walking to the field" << std::endl;
 		pFarmer->ChangeLocation(&field);
 	}
@@ -21,81 +19,79 @@ void AtTheFieldsHarvesting::Enter(Farmer* pFarmer)
 
 void AtTheFieldsHarvesting::Execute(Farmer* pFarmer)
 {
-	int sacks = 0;
-	if (pFarmer->GetLocation()->HasResources() == false)
-	{
-		pFarmer->SetFieldHasResource(false);
-		StartTaskTimer(0.5f);
-		std::cout << "No crops ready to harvest, try again tomorrow!" << std::endl;
-	}
-	else
-	{
-		pFarmer->SetFieldHasResource(true);
-		std::cout << pFarmer->GetName() << " is harvesting crops.." << std::endl;
-	}
+	std::cout << "Resources " << pFarmer->GetLocation()->GetName() << ": " << pFarmer->GetLocation()->GetResources() << std::endl;
 
-	while (pFarmer->GetLocation()->HasResources() == true)
+	if (pFarmer->GetLocation()->HasResources())
 	{
-		pFarmer->GetLocation()->DecreaseResources();
 		pFarmer->AddGoodsToCart();
 		pFarmer->DecreaseEnergy(1);
 		pFarmer->IncreaseHunger(1);
-		pFarmer->IncreaseThirst(1);
-		
-		StartTaskTimer(2.0f);
-		std::cout << "..." << std::endl;
-		
-		sacks += 1;
+		pFarmer->IncreaseThirst(1.5);
+		std::cout << pFarmer->GetName() << " is harvesting crops." << std::endl;
+
+		pFarmer->GetLocation()->DecreaseResources();
 		pFarmer->GetLocation()->SetHasResources();
-		if (pFarmer->Hungry() || pFarmer->Thirsty() || pFarmer->Tierd() || pFarmer->CartIsFull())
+	}
+	else
+	{
+		std::cout << "There are no crops to harvest, come back tomorrow." << std::endl;
+	}
+	pFarmer->SetFieldHasResource(pFarmer->GetLocation()->HasResources());
+}
+
+std::string AtTheFieldsHarvesting::GetEvent(Farmer* pFarmer)
+{
+	std::string event = "Stay";
+	if (pFarmer->Thirsty())
+	{
+		std::cout << pFarmer->GetName() << ": 'I am thirsty, I need to drink'" << std::endl;
+		event = "Thirsty";
+	}
+	else if (pFarmer->Hungry())
+	{
+		std::cout << pFarmer->GetName() << ": 'I am hungry, I need to eat'" << std::endl;
+		event = "Hungry";
+	}
+	else if (pFarmer->Tired())
+	{
+		std::cout << pFarmer->GetName() << ": 'I am tired, I need to sleep'" << std::endl;
+		event = "Tired";
+	}
+	else if (pFarmer->CartIsFull())
+	{
+		std::cout << pFarmer->GetName() << ": 'My horse cart is full, better get to the market and sell some goods!'" << std::endl;
+		event = "CartFull";
+	}
+	else if (!pFarmer->GetLocation()->HasResources())
+	{
+		if (!pFarmer->BarnHasResource())
 		{
-			break;
-		}
-	}
-	if (sacks == 1)
-	{
-		StartTaskTimer(0.5f);
-		std::cout << pFarmer->GetName() << " has placed a new sack of crops in the horse cart." << std::endl;
-	}
-	if (sacks > 1)
-	{
-		StartTaskTimer(0.5f);
-		std::cout << pFarmer->GetName() << " has placed " << sacks << " new sacks of crops in the horse cart." << std::endl;
-	}
-	if (pFarmer->GetLocation()->HasResources() == false)
-	{
-		StartTaskTimer(0.5f);
-		std::cout << pFarmer->GetName() << ": 'My back is hurting after all that work! But I am done harvesting for the day!'" << std::endl;
-		pFarmer->SetFieldHasResource(false);
-		if (pFarmer->BarnHasResource() == false)
-		{
-			StartTaskTimer(0.5f);
-			std::cout << pFarmer->GetName() << ": 'Since the cows are out os milk as well, it's time to get to the market.'" << std::endl;
-			pFarmer->ChangeState(VisitMarketAndSell::Instance());
+			if (pFarmer->GetGoodsInCart() < 1)
+			{
+				std::cout << pFarmer->GetName() << ": 'There is nothing more to do today! Time for fun!'" << std::endl;
+				event = "OutOfResourcesEmptyCart"; // No resources in barn and field and Cart is empty
+			}
+			else
+			{
+				std::cout << pFarmer->GetName() << ": 'No more crops to harvest, and no more cows to milk, better sell what I've got.'" << std::endl;
+				event = "OutOfResources"; // No resources in barn and field
+			}
 		}
 		else
 		{
-			StartTaskTimer(0.5f);
-			std::cout << pFarmer->GetName() << ": 'I think the cows might still have milk to offer.'" << std::endl;
-			pFarmer->ChangeState(EnterBarnAndMilkTheCows::Instance());
+			std::cout << pFarmer->GetName() << ": 'There is no more Crops to harvest, but i think some cows still have milk to give!'" << std::endl;
+			event = "OutOfResourcesBarnAvailable"; // No resources in field, but barn has resources
 		}
-
 	}
-	if (pFarmer->CartIsFull() == true)
-	{
-		StartTaskTimer(0.5f);
-		std::cout << pFarmer->GetName() << ": 'My cart is full, better get to the market and sell some goods!'" << std::endl;
-		pFarmer->ChangeState(VisitMarketAndSell::Instance());
-	}
+	return event;
 }
 
-void AtTheFieldsHarvesting::Exit(Farmer* pFarmer)
+void AtTheFieldsHarvesting::Exit(Farmer* pFarmer, std::string nextState)
 {
-	StartTaskTimer(0.5f);
 	std::cout << pFarmer->GetName() << " is Leaving the field" << std::endl;
 }
 
-float AtTheFieldsHarvesting::GetTaskDuration() const
+int AtTheFieldsHarvesting::GetTaskDuration() const
 {
-	return 1.5f;
+	return 15;
 }
