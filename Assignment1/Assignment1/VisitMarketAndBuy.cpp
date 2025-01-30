@@ -1,7 +1,5 @@
 #include "VisitMarketAndBuy.h"
 #include "Farmer.h"
-#include "StateFactory.h"
-#include <iostream>
 
 VisitMarketAndBuy* VisitMarketAndBuy::Instance()
 {
@@ -18,40 +16,38 @@ void VisitMarketAndBuy::Enter(Farmer* pFarmer)
 	}
 }
 
-
-
 void VisitMarketAndBuy::Execute(Farmer* pFarmer)
 {
 	pFarmer->ChangeLocation(&cottage);
 	int currentFoodAmount = pFarmer->GetLocation()->GetResources();
 	//std::cout << "CurrentFoodAmount = " << currentFoodAmount << std::endl;
+	int maxAmount = pFarmer->GetLocation()->GetFoodMax();
+	int amount = maxAmount - currentFoodAmount;
 
-	if (pFarmer->GetGoldCoins() > 9)
+	if (pFarmer->GetGoldCoins() > amount)
 	{
-		int maxAmount = pFarmer->GetLocation()->GetMilkMax();
-		int amount = maxAmount - currentFoodAmount;
 		pFarmer->GetLocation()->ReplennishReshources(maxAmount);
-		int moneySpent = amount/2;
+		int moneySpent = amount; 
 		pFarmer->GetLocation()->SetHasResources();
 		currentFoodAmount = pFarmer->GetLocation()->GetResources();
 		std::cout << pFarmer->GetName() << " spent " << moneySpent << " gold coins on food." << std::endl;
 
-		//std::cout << "CurrentFoodAmount = " << currentFoodAmount << std::endl;
+		std::cout << "CurrentFoodAmount = " << currentFoodAmount << std::endl;
 		pFarmer->SpendGoldCoins(moneySpent);
 	}
 
-	else if (pFarmer->GetGoldCoins() > 2)
+	else if (pFarmer->GetGoldCoins() > 5)
 	{
 		
 		int amount = pFarmer->GetLocation()->GetMilkMax();
 		pFarmer->GetLocation()->ReplennishReshources(amount);
-		int moneySpent = 3;
+		int moneySpent = 6;
 		pFarmer->GetLocation()->IncreaseResources(6);
 		pFarmer->GetLocation()->SetHasResources();
 		currentFoodAmount = pFarmer->GetLocation()->GetResources();
 		std::cout << pFarmer->GetName() << " spent " << moneySpent << " gold coins on food." << std::endl;
 
-		//std::cout << "CurrentFoodAmount = " << currentFoodAmount << std::endl;
+		std::cout << "CurrentFoodAmount = " << currentFoodAmount << std::endl;
 		pFarmer->SpendGoldCoins(moneySpent);
 	}
 	else
@@ -65,6 +61,7 @@ std::string VisitMarketAndBuy::GetEvent(Farmer* pFarmer)
 {
 	std::string event = "Stay";
 	pFarmer->ChangeLocation(&cottage);
+	int currentFoodAmount = pFarmer->GetLocation()->GetResources();
 	if (pFarmer->Thirsty())
 	{
 		std::cout << pFarmer->GetName() << ": 'I am thirsty, I need to go home and drink'" << std::endl;
@@ -75,19 +72,39 @@ std::string VisitMarketAndBuy::GetEvent(Farmer* pFarmer)
 		std::cout << pFarmer->GetName() << ": 'I am tired, I need to go home and sleep'" << std::endl;
 		event = "Tired";
 	}
-	else if (pFarmer->GetLocation()->GetResources() > 20 || pFarmer->GetGoldCoins() < 3)
+	else if (currentFoodAmount > 5 && pFarmer->Hungry())
 	{
-		if (pFarmer->Hungry())
-		{
-			if (pFarmer->GetLocation()->GetResources() > 2)
-			{
-				std::cout << pFarmer->GetName() << ": 'I am hungry, I need to go home and eat'" << std::endl;
-				event = "Hungry";
-			}
-		}
+		std::cout << pFarmer->GetName() << ": 'I am hungry, I need to go home and eat'" << std::endl;
+		event = "Hungry";
+	}
+	else if (currentFoodAmount < 20 && pFarmer->GetGoldCoins() < 6)
+	{
 		if (pFarmer->GetGoodsInCart() > 0)
 		{
 			std::cout << pFarmer->GetName() << ": 'I do have some goods to sell in my cart!'" << std::endl;
+			event = "CartFull";
+		}
+		else if (pFarmer->BarnHasResource())
+		{
+			std::cout << pFarmer->GetName() << ": 'Time to get back to work!'" << std::endl;
+			event = "DoneShoping->Milk";
+		}
+		else if (pFarmer->FieldHasResource())
+		{
+			std::cout << pFarmer->GetName() << ": 'Time to get back to work!'" << std::endl;
+			event = "DoneShoping->Crops";
+		}
+		else
+		{
+			std::cout << pFarmer->GetName() << ": 'The work is all done for the day! Time for fun!'" << std::endl;
+			event = "DoneShoping->Pub";
+		}
+	}
+	else if (currentFoodAmount > 19)
+	{
+		if (pFarmer->GetGoodsInCart() > 0)
+		{
+			std::cout << pFarmer->GetName() << ": 'I'll sell what I have in my cart since I am at the market now!'" << std::endl;
 			event = "CartFull";
 		}
 		else if (pFarmer->BarnHasResource())
@@ -116,9 +133,4 @@ void VisitMarketAndBuy::Exit(Farmer* pFarmer, std::string nextState)
 	{
 		std::cout << pFarmer->GetName() << " is Leaving the market" << std::endl;
 	}
-}
-
-int VisitMarketAndBuy::GetTaskDuration() const
-{
-	return 15;
 }

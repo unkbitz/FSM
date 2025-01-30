@@ -8,7 +8,6 @@
 #include "AtTheFieldsHarvesting.h"
 #include "VisitMarketAndSell.h"
 #include "Dead.h"
-#include "FarmerGlobalState.h"
 #include "GoHomeAndEat.h"
 #include "QuenchThirst.h"
 #include "VisitMarketAndBuy.h"

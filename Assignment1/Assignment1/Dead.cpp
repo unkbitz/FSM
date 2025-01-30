@@ -1,6 +1,4 @@
-#include <iostream>
 #include "Farmer.h"
-#include "State.h"
 #include "Dead.h"
 
 Dead* Dead::Instance()
@@ -11,6 +9,7 @@ Dead* Dead::Instance()
 
 void Dead::Enter(Farmer* pFarmer)
 {
+    pFarmer->ChangeLocation(&heaven);
     std::cout << pFarmer->GetName() << " has died." << std::endl;
     if (pFarmer->GetHunger() > 34)
     {
@@ -36,9 +35,4 @@ void Dead::Exit(Farmer* pFarmer, std::string nextState)
 std::string Dead::GetEvent(Farmer* pFarmer)
 {
     return std::string();
-}
-
-int Dead::GetTaskDuration() const
-{
-    return 0;
 }

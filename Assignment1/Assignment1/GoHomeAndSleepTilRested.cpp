@@ -1,7 +1,5 @@
 #include "GoHomeAndSleepTilRested.h"
-#include "StateFactory.h"
 #include "Farmer.h"
-#include <iostream>
 
 GoHomeAndSleepTilRested* GoHomeAndSleepTilRested::Instance()
 {
@@ -20,6 +18,7 @@ void GoHomeAndSleepTilRested::Enter(Farmer* pFarmer)
 
 void GoHomeAndSleepTilRested::Execute(Farmer* pFarmer)
 {
+	pFarmer->SetInvitationAccepted(false);
 	if (pFarmer->GetHunger() > 15 )
 	{
 		std::cout << pFarmer->GetName() << " is sleeping... But not so well..." << std::endl;
@@ -72,9 +71,4 @@ void GoHomeAndSleepTilRested::Exit(Farmer* pFarmer, std::string nextState)
 	{
 		std::cout << pFarmer->GetName() << " is Leaving the cottage" << std::endl;
 	}
-}
-
-int GoHomeAndSleepTilRested::GetTaskDuration() const
-{
-    return 30;
 }

@@ -1,6 +1,4 @@
-#include <iostream>
 #include "BuyAle.h"
-#include "StateFactory.h"
 
 BuyAle* BuyAle::Instance()
 {
@@ -19,9 +17,9 @@ void BuyAle::Enter(Farmer* pFarmer)
 
 void BuyAle::Execute(Farmer* pFarmer)
 {
-	if (pFarmer->GetGoldCoins() > 4)
+	if (pFarmer->GetGoldCoins() > 9)
 	{
-		int moneySpent = 5;
+		int moneySpent = 10;
 		pFarmer->IncreaseThirst(-5);
 		std::cout << pFarmer->GetName() << " spent " << moneySpent << " gold coins." << std::endl;
 		std::cout << pFarmer->GetName() << " drinks ale!" << std::endl;
@@ -40,7 +38,7 @@ std::string BuyAle::GetEvent(Farmer* pFarmer)
 	{
 		event = "Unthirsty";
 	}
-	else if (pFarmer->GetGoldCoins() < 5)
+	else if (pFarmer->GetGoldCoins() < 10)
 	{
 		std::cout << pFarmer->GetName() << ": 'I am still thirsty, but can't afford more ale. I need to go home.'" << std::endl;
 		event = "OutOfGold";
@@ -56,9 +54,4 @@ std::string BuyAle::GetEvent(Farmer* pFarmer)
 void BuyAle::Exit(Farmer* pFarmer, std::string nextState)
 {
     std::cout << pFarmer->GetName() << " 'Ah that was good!'" << std::endl;
-}
-
-int BuyAle::GetTaskDuration() const
-{
-	return 2;
 }

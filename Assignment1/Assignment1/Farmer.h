@@ -5,6 +5,8 @@
 #include "State.h"
 #include "Location.h"
 #include "StateMachine.cpp"
+#include <queue>
+#include <iostream>
 
 struct StateTransition {
 	std::string currentState;
@@ -18,11 +20,12 @@ private:
 	static const std::vector<StateTransition> m_stateTransitionTable;
 	StateMachine<Farmer>* m_pStateMachine;
 	std::string m_name;
+	std::queue<std::string> m_messages;
 	//std::string m_cowName;
 	int m_imilkLeft;
 	int m_icropsLeft;
 	Location* m_Location;
-	float m_ftaskTimer;
+	Location* m_LastLocation;
 
 	//a pointer to an instance of a State
 	State<Farmer>* m_pCurrentState;
@@ -30,9 +33,9 @@ private:
 
 	bool m_fieldHasResource;
 	bool m_barnHasResource;
+	bool m_invitationAccepted;
 	int m_iGoldCoins;
 	int m_icart;
-	int m_iJugs;
 	float m_fHunger;//the higher the value, the hungrier the agent
 	float m_fThirst;//the higher the value, the thirstier the agent
 	float m_fEnergy;//the lower the value, the more tired the agent
@@ -44,12 +47,18 @@ public:
 	void Update(GameTime gameTime);
 	void ChangeState(State<Farmer>* pNewState);
 	void ChangeLocation(Location* newLocation);
+	void changeLastLocation(Location* Location) { m_LastLocation = Location; }
+	void SendMessage(Farmer& recipient, const std::string& message) const;
+	void ReceiveMessage(const std::string& message);
+	void ProcessMessages(std::vector<std::unique_ptr<Farmer>>& farmers);
+	void Meet(std::unique_ptr<Farmer>& otherFarmer);
 	std::string getNextState(const std::string& currentState, const std::string& event);
 
 	// Getters
 	StateMachine<Farmer>* GetFSM() const { return m_pStateMachine; }
 	static std::vector<StateTransition> GetStateTransitionTable() { return m_stateTransitionTable; }
 	Location* GetLocation() const { return m_Location; }
+	Location* GetLastLocation() const { return m_LastLocation; }
 	State<Farmer>*  GetPreviousState() const { return m_pPreviousState; }
 	std::string GetName() const { return m_name; }
 	std::string GetNameOfCurrentState() const;
@@ -58,7 +67,6 @@ public:
 	float GetEnergy() const { return m_fEnergy; }
 	int GetGoodsInCart() const { return m_icart; }
 	int GetGoldCoins() const { return m_iGoldCoins; }
-	int GetNumberOfJugs() const { return m_iJugs; }
 
 	// Setters
 	void SetName(const std::string& name) { m_name = name; }
@@ -75,6 +83,7 @@ public:
 	void IncreaseHunger(float kcalLoss) { m_fHunger += kcalLoss; }
 	void EarnGoldCoins(int coinsEarned) { m_iGoldCoins += coinsEarned; }
 	void SpendGoldCoins(int coinsSpent) { m_iGoldCoins -= coinsSpent; }
+	void SetInvitationAccepted(bool canCome) { m_invitationAccepted = canCome; }
 
 	// Bools
 	bool CartIsFull() const;
@@ -83,4 +92,6 @@ public:
 	bool Hungry() const { return m_fHunger > 32; }
 	bool FieldHasResource() const { return m_fieldHasResource; }
 	bool BarnHasResource() const { return m_barnHasResource; }
+	bool InvitationAccepted() const { return m_invitationAccepted; }
+	bool Only1Going(std::vector<std::unique_ptr<Farmer>>& farmers);
 };

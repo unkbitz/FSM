@@ -1,7 +1,5 @@
-#include <iostream>
 #include <algorithm> // for std::min
 #include "AtThePubWithFriends.h"
-#include "StateFactory.h"
 
 AtThePubWithFriends* AtThePubWithFriends::Instance()
 {
@@ -35,7 +33,7 @@ std::string AtThePubWithFriends::GetEvent(Farmer* pFarmer)
 	std::string event = "TimeForFun";
 	if (pFarmer->Thirsty())
 	{
-		if (pFarmer->GetGoldCoins() < 4)
+		if (pFarmer->GetGoldCoins() < 10)
 		{
 			std::cout << pFarmer->GetName() << ": 'I am thirsty, but can't afford ale. I need to go home.'" << std::endl;
 			event = "Thirsty";
@@ -45,10 +43,10 @@ std::string AtThePubWithFriends::GetEvent(Farmer* pFarmer)
 			std::cout << pFarmer->GetName() << ": 'I am thirsty'" << std::endl;
 			event = "ThirstyAndRich";
 		}
-	}
+	} 
 	else if (pFarmer->Hungry())
 	{
-		if (pFarmer->GetGoldCoins() < 6)
+		if (pFarmer->GetGoldCoins() < 13)
 		{
 			std::cout << pFarmer->GetName() << ": 'I am hungry, but can't afford pie. I need to go home'" << std::endl;
 			event = "Hungry";
@@ -73,9 +71,4 @@ void AtThePubWithFriends::Exit(Farmer* pFarmer, std::string nextState)
 	{
 		std::cout << pFarmer->GetName() << " is Leaving the pub" << std::endl;
 	}
-}
-
-int AtThePubWithFriends::GetTaskDuration() const
-{
-	return 10;
 }

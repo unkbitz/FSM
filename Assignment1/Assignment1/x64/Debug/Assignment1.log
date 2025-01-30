@@ -1,5 +1,63 @@
-﻿  GoHomeAndSleepTilRested.cpp
-C:\Users\Sara_\Documents\GitHub\FSM\Assignment1\Assignment1\Farmer.h(71,51): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+﻿  AtTheFieldsHarvesting.cpp
+C:\Users\Sara_\Documents\GitHub\FSM\Assignment1\Assignment1\Farmer.h(79,51): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+  (compiling source file 'AtTheFieldsHarvesting.cpp')
+  
+  AtThePubWithFriends.cpp
+C:\Users\Sara_\Documents\GitHub\FSM\Assignment1\Assignment1\Farmer.h(79,51): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+  (compiling source file 'AtThePubWithFriends.cpp')
+  
+C:\Users\Sara_\Documents\GitHub\FSM\Assignment1\Assignment1\AtThePubWithFriends.cpp(16,22): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+  BuyAle.cpp
+C:\Users\Sara_\Documents\GitHub\FSM\Assignment1\Assignment1\Farmer.h(79,51): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+  (compiling source file 'BuyAle.cpp')
+  
+  BuyPie.cpp
+C:\Users\Sara_\Documents\GitHub\FSM\Assignment1\Assignment1\Farmer.h(79,51): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+  (compiling source file 'BuyPie.cpp')
+  
+  Dead.cpp
+C:\Users\Sara_\Documents\GitHub\FSM\Assignment1\Assignment1\Farmer.h(79,51): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+  (compiling source file 'Dead.cpp')
+  
+  EnterBarnAndMilkTheCows.cpp
+C:\Users\Sara_\Documents\GitHub\FSM\Assignment1\Assignment1\Farmer.h(79,51): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+  (compiling source file 'EnterBarnAndMilkTheCows.cpp')
+  
+  Farmer.cpp
+C:\Users\Sara_\Documents\GitHub\FSM\Assignment1\Assignment1\Farmer.h(79,51): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+  (compiling source file 'Farmer.cpp')
+  
+C:\Users\Sara_\Documents\GitHub\FSM\Assignment1\Assignment1\Farmer.cpp(13,11): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+C:\Users\Sara_\Documents\GitHub\FSM\Assignment1\Assignment1\Farmer.cpp(12,11): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+C:\Users\Sara_\Documents\GitHub\FSM\Assignment1\Assignment1\Farmer.cpp(14,11): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+  GoHomeAndEat.cpp
+C:\Users\Sara_\Documents\GitHub\FSM\Assignment1\Assignment1\Farmer.h(79,51): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+  (compiling source file 'GoHomeAndEat.cpp')
+  
+  GoHomeAndSleepTilRested.cpp
+C:\Users\Sara_\Documents\GitHub\FSM\Assignment1\Assignment1\Farmer.h(79,51): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
   (compiling source file 'GoHomeAndSleepTilRested.cpp')
   
+  Main.cpp
+C:\Users\Sara_\Documents\GitHub\FSM\Assignment1\Assignment1\Farmer.h(79,51): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+  (compiling source file 'Main.cpp')
+  
+  QuenchThirst.cpp
+C:\Users\Sara_\Documents\GitHub\FSM\Assignment1\Assignment1\Farmer.h(79,51): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+  (compiling source file 'QuenchThirst.cpp')
+  
+  StateFactory.cpp
+C:\Users\Sara_\Documents\GitHub\FSM\Assignment1\Assignment1\Farmer.h(79,51): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+  (compiling source file 'StateFactory.cpp')
+  
+  VisitMarketAndBuy.cpp
+C:\Users\Sara_\Documents\GitHub\FSM\Assignment1\Assignment1\Farmer.h(79,51): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+  (compiling source file 'VisitMarketAndBuy.cpp')
+  
+  VisitMarketAndSell.cpp
+C:\Users\Sara_\Documents\GitHub\FSM\Assignment1\Assignment1\Farmer.h(79,51): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+  (compiling source file 'VisitMarketAndSell.cpp')
+  
+C:\Users\Sara_\Documents\GitHub\FSM\Assignment1\Assignment1\VisitMarketAndSell.cpp(23,20): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+  Generating Code...
   Assignment1.vcxproj -> C:\Users\Sara_\Documents\GitHub\FSM\Assignment1\x64\Debug\Assignment1.exe

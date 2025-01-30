@@ -44,3 +44,4 @@ extern Location market;
 extern Location field;
 extern Location well;
 extern Location pub;
+extern Location heaven;

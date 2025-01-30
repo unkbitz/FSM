@@ -1,8 +1,5 @@
 #include "GoHomeAndEat.h"
-#include "VisitMarketAndBuy.h"
 #include "Farmer.h"
-#include "StateFactory.h"
-#include <iostream>
 
 GoHomeAndEat* GoHomeAndEat::Instance()
 {
@@ -21,7 +18,7 @@ void GoHomeAndEat::Enter(Farmer* pFarmer)
 
 void GoHomeAndEat::Execute(Farmer* pFarmer)
 {
-	//std::cout << "Resources in "<< pFarmer->GetLocation()->GetName() <<": " << pFarmer->GetLocation()->GetResources() << std::endl;
+	std::cout << "Resources in "<< pFarmer->GetLocation()->GetName() <<": " << pFarmer->GetLocation()->GetResources() << std::endl;
 	if (pFarmer->GetLocation()->HasResources())
 	{
 		std::cout << pFarmer->GetName() << " is eating." << std::endl;
@@ -113,9 +110,4 @@ void GoHomeAndEat::Exit(Farmer* pFarmer, std::string nextState)
 	{
 		std::cout << pFarmer->GetName() << " is Leaving the cottage" << std::endl;
 	}
-}
-
-int GoHomeAndEat::GetTaskDuration() const
-{
-    return 10;
 }

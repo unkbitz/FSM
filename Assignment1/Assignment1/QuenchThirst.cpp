@@ -1,7 +1,5 @@
 #include "QuenchThirst.h"
 #include "Farmer.h"
-#include "StateFactory.h"
-#include <iostream>
 
 QuenchThirst* QuenchThirst::Instance()
 {
@@ -72,9 +70,4 @@ std::string QuenchThirst::GetEvent(Farmer* pFarmer)
 void QuenchThirst::Exit(Farmer* pFarmer, std::string nextState)
 {
     std::cout << pFarmer->GetName() << " is leaving the well." << std::endl;
-}
-
-int QuenchThirst::GetTaskDuration() const
-{
-    return 1;
 }

@@ -1,7 +1,5 @@
 #include "EnterBarnAndMilkTheCows.h"
-#include "StateFactory.h"
 #include "Farmer.h"
-#include <iostream>
 
 EnterBarnAndMilkTheCows* EnterBarnAndMilkTheCows::Instance()
 {
@@ -90,9 +88,4 @@ std::string EnterBarnAndMilkTheCows::GetEvent(Farmer* pFarmer)
 void EnterBarnAndMilkTheCows::Exit(Farmer* pFarmer, std::string nextState)
 {
 	std::cout << pFarmer->GetName() << " is Leaving the barn" << std::endl;
-}
-
-int EnterBarnAndMilkTheCows::GetTaskDuration() const
-{
-	return 15;
 }

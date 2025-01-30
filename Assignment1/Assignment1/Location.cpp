@@ -6,6 +6,7 @@ Location market("Market", 15, 15, true, 1);
 Location field("Field", 0, 10, true, 80);
 Location well("Well", 2, 2, true, 1);
 Location pub("Pub", 0, 0, true, 1);
+Location heaven("Heaven", 1000, 1000, true, 1);
 
 
 Location::Location(const std::string& name, int x, int y, bool hasResources, int amountResouces) : 

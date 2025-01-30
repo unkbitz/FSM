@@ -1,7 +1,5 @@
 #include "VisitMarketAndSell.h"
-#include "StateFactory.h"
 #include "Farmer.h"
-#include <iostream>
 
 VisitMarketAndSell* VisitMarketAndSell::Instance()
 {
@@ -22,7 +20,7 @@ void VisitMarketAndSell::Execute(Farmer* pFarmer)
 {
 	if (pFarmer->GetGoodsInCart() > 0)
 		{
-			int earnedCoins = 2 * pFarmer->GetGoodsInCart();
+			int earnedCoins = 0.5 * pFarmer->GetGoodsInCart();
 			pFarmer->EmptyCart();
 			pFarmer->EarnGoldCoins(earnedCoins);
 			std::cout << pFarmer->GetName() << " has earned " << earnedCoins << " coins of gold from selling goods." << std::endl;
@@ -51,7 +49,7 @@ std::string VisitMarketAndSell::GetEvent(Farmer* pFarmer)
 		std::cout << pFarmer->GetName() << ": 'I am tired, I need to go home and sleep'" << std::endl;
 		event = "Tired";
 	}
-	if (pFarmer->GetGoodsInCart() < 1)
+	else if (pFarmer->GetGoodsInCart() < 1)
 	{
 		if (pFarmer->BarnHasResource())
 		{
@@ -80,9 +78,4 @@ void VisitMarketAndSell::Exit(Farmer* pFarmer, std::string nextState)
 		std::cout << pFarmer->GetName() << " is Leaving the market" << std::endl;
 	}
 
-}
-
-int VisitMarketAndSell::GetTaskDuration() const
-{
-	return 20;
 }

@@ -1,6 +1,5 @@
 #include "AtTheFieldsHarvesting.h"
-#include "StateFactory.h"
-#include <iostream>
+
 
 AtTheFieldsHarvesting* AtTheFieldsHarvesting::Instance()
 {
@@ -89,9 +88,4 @@ std::string AtTheFieldsHarvesting::GetEvent(Farmer* pFarmer)
 void AtTheFieldsHarvesting::Exit(Farmer* pFarmer, std::string nextState)
 {
 	std::cout << pFarmer->GetName() << " is Leaving the field" << std::endl;
-}
-
-int AtTheFieldsHarvesting::GetTaskDuration() const
-{
-	return 15;
 }

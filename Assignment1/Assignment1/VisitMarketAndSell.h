@@ -14,6 +14,5 @@ public:
 	virtual void Execute(Farmer* pFarmer);
 	virtual void Exit(Farmer* pFarmer, std::string nextState);
 	virtual std::string GetEvent(Farmer* pFarmer);
-	virtual int GetTaskDuration() const;
 	virtual std::string GetName() const { return "VisitMarketAndSell"; }
 };
