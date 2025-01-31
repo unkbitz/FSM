@@ -6,8 +6,8 @@ Farmer::Farmer(int ID, std::string name, int startCondition) :
 	m_name(name),
 	m_imilkLeft(10),
 	m_icropsLeft(10),
-	m_LastLocation(&cottage),
-	m_Location(&barn),
+	m_lastLocation(&cottage),
+	m_location(&barn),
 	m_iGoldCoins(15),
 	m_fThirst(2 * startCondition),
 	m_fHunger(1 * startCondition),
@@ -15,9 +15,9 @@ Farmer::Farmer(int ID, std::string name, int startCondition) :
 	m_fieldHasResource(true),
 	m_barnHasResource(true),
 	m_invitationAccepted(false),
+	m_hasBeenGreeted(false),
 	BaseEntity(ID),
 	m_pCurrentState(EnterBarnAndMilkTheCows::Instance()),
-	m_pPreviousState(AtTheFieldsHarvesting::Instance()),
 	m_pStateMachine(new StateMachine<Farmer>(this))
 {
 	//set up state machine
@@ -42,7 +42,8 @@ const std::vector<StateTransition> Farmer::m_stateTransitionTable =
 	{"EnterBarnAndMilkTheCows", "NightTime", "GoHomeAndSleepTilRested"},  
 	{"EnterBarnAndMilkTheCows", "OutOfResources", "VisitMarketAndSell"},  
 	{"EnterBarnAndMilkTheCows", "OutOfResourcesFieldAvailable", "AtTheFieldsHarvesting"},
-	{"EnterBarnAndMilkTheCows", "OutOfResourcesEmptyCart", "AtThePubWithFriends"},
+	{"EnterBarnAndMilkTheCows", "TimeForFun", "AtThePubWithFriends"},
+	{"EnterBarnAndMilkTheCows", "TimeToRest", "GoHomeAndChill"},
 	{"EnterBarnAndMilkTheCows", "Stay", "EnterBarnAndMilkTheCows"},
 
 	{"AtTheFieldsHarvesting", "CartFull", "VisitMarketAndSell"},
@@ -51,7 +52,8 @@ const std::vector<StateTransition> Farmer::m_stateTransitionTable =
 	{"AtTheFieldsHarvesting", "Tired", "GoHomeAndSleepTilRested"},
 	{"AtTheFieldsHarvesting", "NightTime", "GoHomeAndSleepTilRested"},
 	{"AtTheFieldsHarvesting", "OutOfResources", "VisitMarketAndSell"},
-	{"AtTheFieldsHarvesting", "OutOfResourcesEmptyCart", "AtThePubWithFriends"},
+	{"AtTheFieldsHarvesting", "TimeForFun", "AtThePubWithFriends"},
+	{"AtTheFieldsHarvesting", "TimeToRest", "GoHomeAndChill"},
 	{"AtTheFieldsHarvesting", "OutOfResourcesBarnAvailable", "EnterBarnAndMilkTheCows"},
 	{"AtTheFieldsHarvesting", "Stay", "AtTheFieldsHarvesting"},
 
@@ -59,10 +61,10 @@ const std::vector<StateTransition> Farmer::m_stateTransitionTable =
 	{"VisitMarketAndSell", "Thirsty", "QuenchThirst"},
 	{"VisitMarketAndSell", "Tired", "GoHomeAndSleepTilRested"},
 	{"VisitMarketAndSell", "NightTime", "GoHomeAndSleepTilRested"},
-	{"VisitMarketAndSell", "SoldAll", "AtThePubWithFriends"},
+	{"VisitMarketAndSell", "TimeForFun", "AtThePubWithFriends"},
 	{"VisitMarketAndSell", "SoldAll->Milk", "EnterBarnAndMilkTheCows"},
 	{"VisitMarketAndSell", "SoldAll->Crops", "AtTheFieldsHarvesting"},
-	{"VisitMarketAndSell", "TimeForFun", "AtThePubWithFriends"},
+	{"VisitMarketAndSell", "TimeToRest", "GoHomeAndChill"},
 	{"VisitMarketAndSell", "Stay", "VisitMarketAndSell"},
 
 	{"VisitMarketAndBuy", "Hungry", "GoHomeAndEat"},
@@ -72,8 +74,8 @@ const std::vector<StateTransition> Farmer::m_stateTransitionTable =
 	{"VisitMarketAndBuy", "CartFull", "VisitMarketAndSell"},
 	{"VisitMarketAndBuy", "DoneShoping->Milk", "EnterBarnAndMilkTheCows"},
 	{"VisitMarketAndBuy", "DoneShoping->Crops", "AtTheFieldsHarvesting"},
-	{"VisitMarketAndBuy", "DoneShoping->Pub", "AtThePubWithFriends"},
 	{"VisitMarketAndBuy", "TimeForFun", "AtThePubWithFriends"},
+	{"VisitMarketAndBuy", "TimeToRest", "GoHomeAndChill"},
 	{"VisitMarketAndBuy", "Stay", "VisitMarketAndBuy"},
 
 	{"GoHomeAndEat", "Thirsty", "QuenchThirst"},
@@ -87,7 +89,8 @@ const std::vector<StateTransition> Farmer::m_stateTransitionTable =
 	{"GoHomeAndEat", "OutOfResources", "VisitMarketAndBuy"},
 	{"GoHomeAndEat", "OutOfResourcesAndGoldAndNoGoodsInCart->Milk", "EnterBarnAndMilkTheCows"},
 	{"GoHomeAndEat", "OutOfResourcesAndGoldAndNoGoodsInCart->Crops", "AtTheFieldsHarvesting"},
-	{"GoHomeAndEat", "Full", "AtThePubWithFriends"},
+	{"GoHomeAndEat", "TimeForFun", "AtThePubWithFriends"},
+	{"VisitMarketAndSell", "TimeToRest", "GoHomeAndChill"},
 	{"GoHomeAndEat", "Stay", "GoHomeAndEat"},
 
 	{"QuenchThirst", "Hungry", "GoHomeAndEat"},
@@ -97,17 +100,22 @@ const std::vector<StateTransition> Farmer::m_stateTransitionTable =
 	{"QuenchThirst", "UnThirstyFieldAvavible", "AtTheFieldsHarvesting"},
 	{"QuenchThirst", "UnthirstyGoodsToSel", "VisitMarketAndSell"},
 	{"QuenchThirst", "CartFull", "VisitMarketAndSell"},
-	{"QuenchThirst", "Unthirsty", "AtThePubWithFriends"},
+	{"QuenchThirst", "TimeForFun", "AtThePubWithFriends"},
+	{"VisitMarketAndSell", "TimeToRest", "GoHomeAndChill"},
 	{"QuenchThirst", "Stay", "QuenchThirst"},
 
-	{"GoHomeAndSleepTilRested", "Morning", "EnterBarnAndMilkTheCows"},
 	{"GoHomeAndSleepTilRested", "Rested", "EnterBarnAndMilkTheCows"},
 	{"GoHomeAndSleepTilRested", "Hungry", "GoHomeAndEat"},
 	{"GoHomeAndSleepTilRested", "Thirsty", "QuenchThirst"},
 	{"GoHomeAndSleepTilRested", "CartFull", "VisitMarketAndSell"},
-	{"GoHomeAndSleepTilRested", "TimeForFun", "AtThePubWithFriends"},
 	{"GoHomeAndSleepTilRested", "Stay", "GoHomeAndSleepTilRested"},
 	{"GoHomeAndSleepTilRested", "NightTime", "GoHomeAndSleepTilRested"},
+
+	{"GoHomeAndChill", "Hungry", "GoHomeAndEat"},
+	{"GoHomeAndChill", "Thirsty", "QuenchThirst"},
+	{"GoHomeAndChill", "Tired", "GoHomeAndSleepTilRested"},
+	{"GoHomeAndChill", "Stay", "GoHomeAndChill"},
+	{"GoHomeAndChill", "NightTime", "GoHomeAndSleepTilRested"},
 
 	{"AtThePubWithFriends", "HungryAndRich", "BuyPie"},
 	{"AtThePubWithFriends", "Hungry", "GoHomeAndEat"},
@@ -166,9 +174,13 @@ std::string Farmer::GetNameOfCurrentState() const
 	{
 		return "QuenchThirst";
 	}
-	else if (m_pCurrentState == GoHomeAndEat::Instance()) 
+	else if (m_pCurrentState == GoHomeAndEat::Instance())
 	{
 		return "GoHomeAndEat";
+	}
+	else if (m_pCurrentState == GoHomeAndChill::Instance())
+	{
+		return "GoHomeAndChill";
 	}
 	else if (m_pCurrentState == Dead::Instance()) 
 	{
@@ -190,7 +202,10 @@ void Farmer::Update(GameTime gameTime)
 	{
 		this->ChangeState(Dead::Instance());
 	}
-	
+	else if (gameTime.GetHour() == 20 && gameTime.GetMinute() == 0 && this->m_invitationAccepted == true)
+	{
+		event = "TimeForFun";
+	}
 	else if (gameTime.GetHour() >= 22 || gameTime.GetHour() < 6)
 	{
 		event = "NightTime";
@@ -221,11 +236,6 @@ void Farmer::Update(GameTime gameTime)
 
 	// Get the next state based on the current state and event
 	std::string nextState = getNextState(GetNameOfCurrentState(), event);
-
-
-	//std::cout << "Update: CurrentState=" << GetNameOfCurrentState()
-	//	<< ", Event=" << event
-	//	<< ", NextState=" << nextState << std::endl;
 
 	if (nextState != GetNameOfCurrentState()) 
 	{
@@ -272,7 +282,6 @@ void Farmer::ChangeState(State<Farmer>* pNewState)
 	// Enter the new state
 	m_pCurrentState->Enter(this);
 
-	//std::cout << "Changed state to " << GetNameOfCurrentState() << std::endl;
 }
 
 std::string Farmer::getNextState(const std::string& currentState, const std::string& event)
@@ -282,9 +291,6 @@ std::string Farmer::getNextState(const std::string& currentState, const std::str
 		// Check if the current state and event match the transition table entry
 		if (transition.currentState == currentState && transition.event == event)
 		{
-			//std::cout << "Transition: CurrentState=" << currentState
-			//	<< ", Event=" << event
-			//	<< ", NextState=" << transition.nextState << std::endl;
 			return transition.nextState;
 		}
 	}
@@ -294,8 +300,9 @@ std::string Farmer::getNextState(const std::string& currentState, const std::str
 
 void Farmer::ChangeLocation(Location* newLocation)
 {
-	m_LastLocation = m_Location;
-	m_Location = newLocation;
+	m_hasBeenGreeted = false;
+	m_lastLocation = m_location;
+	m_location = newLocation;
 }
 
 void Farmer::SendMessage(Farmer& recipient, const std::string& message) const
@@ -310,18 +317,20 @@ void Farmer::ReceiveMessage(const std::string& message)
 
 void Farmer::ProcessMessages(std::vector<std::unique_ptr<Farmer>>& farmers)
 {
+	const std::string green = "\033[32m";
+	const std::string resetColor = "\033[0m";
 	while (!m_messages.empty())
 	{
 		std::string message = m_messages.front();
 		m_messages.pop();
-		std::cout << "\033[32m" << m_name << " reviced a message: " << message << "\033[0m" << std::endl;
+		std::cout << green << m_name << " reviced a message: " << message << resetColor << std::endl;
 
 		if (message.find("Hi! You wanna join me at the pub by 20:00?") != std::string::npos)
 		{
 			if (m_fEnergy > 55)
 			{
 				std::string responce = "Sure, I'll join you!";
-				//std::cout << "\033[32m" << m_name << " responds: " << responce << "\033[0m" << std::endl;
+
 				this->SetInvitationAccepted(true);
 				std::string inviterName = message.substr(0, message.find(':'));
 				for (auto& farmer : farmers)
@@ -330,7 +339,7 @@ void Farmer::ProcessMessages(std::vector<std::unique_ptr<Farmer>>& farmers)
 					{
 						SendMessage(*farmer, responce);
 						farmer->SetInvitationAccepted(true);
-						std::cout << "\033[32m" << this->GetName() << " answered " << farmer->GetName() << "\033[0m" << std::endl;
+						std::cout << green << this->GetName() << " answered " << farmer->GetName() << resetColor << std::endl;
 						break;
 					}
 				}
@@ -339,14 +348,14 @@ void Farmer::ProcessMessages(std::vector<std::unique_ptr<Farmer>>& farmers)
 			{
 				this->SetInvitationAccepted(false);
 				std::string responce = "Sorry, I can't make it.";
-				//std::cout << "\033[32m" << m_name << " responds: " << responce << "\033[0m" << std::endl;
+
 				std::string inviterName = message.substr(0, message.find(':'));
 				for (auto& farmer : farmers)
 				{
 					if (farmer->GetName() == inviterName)
 					{
 						SendMessage(*farmer, responce);
-						std::cout << "\033[32m" << this->GetName() << " answered " << farmer->GetName() << "\033[0m" << std::endl;
+						std::cout << green << this->GetName() << " answered " << farmer->GetName() << resetColor << std::endl;
 						break;
 					}
 				}
@@ -359,7 +368,7 @@ void Farmer::ProcessMessages(std::vector<std::unique_ptr<Farmer>>& farmers)
 			if (m_fEnergy < 5)
 			{
 				std::string responce = "That's okey! I was to tierd to go anyway!";
-				//std::cout << "\033[32m" << m_name << " responds: " << responce << "\033[0m" << std::endl;
+
 				this->SetInvitationAccepted(false);
 				std::string inviterName = message.substr(0, message.find(':'));
 				for (auto& farmer : farmers)
@@ -368,7 +377,7 @@ void Farmer::ProcessMessages(std::vector<std::unique_ptr<Farmer>>& farmers)
 					{
 						SendMessage(*farmer, responce);
 						farmer->SetInvitationAccepted(false);
-						std::cout << "\033[32m" << this->GetName() << " answered " << farmer->GetName() << "\033[0m" << std::endl;
+						std::cout << green << this->GetName() << " answered " << farmer->GetName() << resetColor << std::endl;
 						break;
 					}
 				}
@@ -376,7 +385,7 @@ void Farmer::ProcessMessages(std::vector<std::unique_ptr<Farmer>>& farmers)
 			else if (m_iGoldCoins < 10)
 			{
 				std::string responce = "That's okey! I can't go either!";
-				//std::cout << "\033[32m" << m_name << " responds: " << responce << "\033[0m" << std::endl;
+
 				this->SetInvitationAccepted(false);
 				std::string inviterName = message.substr(0, message.find(':'));
 				for (auto& farmer : farmers)
@@ -385,7 +394,7 @@ void Farmer::ProcessMessages(std::vector<std::unique_ptr<Farmer>>& farmers)
 					{
 						SendMessage(*farmer, responce);
 						farmer->SetInvitationAccepted(false);
-						std::cout << "\033[32m" << this->GetName() << " answered " << farmer->GetName() << "\033[0m" << std::endl;
+						std::cout << green << this->GetName() << " answered " << farmer->GetName() << resetColor << std::endl;
 						break;
 					}
 				}
@@ -393,7 +402,7 @@ void Farmer::ProcessMessages(std::vector<std::unique_ptr<Farmer>>& farmers)
 			else if (Only1Going(farmers) == true)
 			{
 				std::string responce = "That's okey! I'll stay at home as well, otherwise I'd be going alone.";
-				//std::cout << "\033[32m" << m_name << " responds: " << responce << "\033[0m" << std::endl;
+
 				this->SetInvitationAccepted(false);
 				std::string inviterName = message.substr(0, message.find(':'));
 				for (auto& farmer : farmers)
@@ -403,7 +412,7 @@ void Farmer::ProcessMessages(std::vector<std::unique_ptr<Farmer>>& farmers)
 						SendMessage(*farmer, responce);
 						farmer->SetInvitationAccepted(false);
 
-						std::cout << "\033[32m" << this->GetName() << " answered " << farmer->GetName() << "\033[0m" << std::endl;
+						std::cout << green << this->GetName() << " answered " << farmer->GetName() << resetColor << std::endl;
 						break;
 					}
 				}
@@ -412,7 +421,7 @@ void Farmer::ProcessMessages(std::vector<std::unique_ptr<Farmer>>& farmers)
 			{
 				this->SetInvitationAccepted(true);
 				std::string responce = "Okey, hope you can come some other time!";
-				//std::cout << "\033[32m" << m_name << " responds: " << responce << "\033[0m" << std::endl;
+
 				std::string inviterName = message.substr(0, message.find(':'));
 				for (auto& farmer : farmers)
 				{
@@ -420,7 +429,7 @@ void Farmer::ProcessMessages(std::vector<std::unique_ptr<Farmer>>& farmers)
 					{
 						SendMessage(*farmer, responce);
 						farmer->SetInvitationAccepted(false);
-						std::cout << "\033[32m" << this->GetName() << " answered " << farmer->GetName() << "\033[0m" << std::endl;
+						std::cout << green << this->GetName() << " answered " << farmer->GetName() << resetColor << std::endl;
 						break;
 					}
 				}
@@ -431,63 +440,71 @@ void Farmer::ProcessMessages(std::vector<std::unique_ptr<Farmer>>& farmers)
 
 void Farmer::Meet(std::unique_ptr<Farmer>& otherFarmer)
 {
+	otherFarmer->m_hasBeenGreeted = true;
+	const std::string brightBlue = "\033[94m";
+	const std::string resetColor = "\033[0m";
+
 	if (this->GetLocation()->GetName() == "Cottage")
 	{
-		std::cout << this->GetName() << ": 'Hey " << otherFarmer->GetName() << "!'" << std::endl;
-		std::cout << otherFarmer->GetName() << ": 'Hey " << this->GetName() << "!'" << std::endl;
+		std::cout << brightBlue << this->GetName() << ": 'Hey " << otherFarmer->GetName() << "!'" << resetColor << std::endl;
+		std::cout << brightBlue << otherFarmer->GetName() << ": 'Hey " << this->GetName() << "!'" << resetColor << std::endl;
 	}
 	else if (this->GetLocation()->GetName() == "Barn")
 	{
-		std::cout << this->GetName() << ": 'Hey " << otherFarmer->GetName() << "! Hard work today!'" << std::endl;
-		std::cout << otherFarmer->GetName() << ": 'Every day, " << this->GetName() << "!'" << std::endl;
+		std::cout << brightBlue << this->GetName() << ": 'Hey " << otherFarmer->GetName() << "! Hard work today!'" << resetColor << std::endl;
+		std::cout << brightBlue << otherFarmer->GetName() << ": 'Every day, " << this->GetName() << "!'" << resetColor << std::endl;
 	}
 	else if (this->GetLocation()->GetName() == "Market")
 	{
-		std::cout << this->GetName() << ": 'Hey " << otherFarmer->GetName() << "! What a coincidence to run into you at the market!?'" << std::endl;
+		std::cout << brightBlue << this->GetName() << ": 'Hey " << otherFarmer->GetName() << "! What a coincidence to run into you at the market!?'" << resetColor << std::endl;
 		if (otherFarmer->GetNameOfCurrentState() == "VisitMarketAndSell")
 		{
-			std::cout << otherFarmer->GetName() << ": 'Yes, I am here to sell goods, what brought you here, " << this->GetName() << "?'" << std::endl;
+			std::cout << brightBlue << otherFarmer->GetName() << ": 'Yes, I am here to sell goods, what brought you here, " << this->GetName() << "?'" << resetColor << std::endl;
 			if (this->GetNameOfCurrentState() == "VisitMarketAndSell")
 			{
-				std::cout << this->GetName() << ": 'Same as you, my friend!" << std::endl;
+				std::cout << brightBlue << this->GetName() << ": 'Same as you, my friend!'" << resetColor << std::endl;
 			}
 			else
 			{
-				std::cout << this->GetName() << ": 'I am doing some food shopping." << std::endl;
+				std::cout << brightBlue << this->GetName() << ": 'I am doing some food shopping.'" << resetColor << std::endl;
 			}
 		}
 		if (otherFarmer->GetNameOfCurrentState() == "VisitMarketAndBuy")
 		{
-			std::cout << otherFarmer->GetName() << ": 'Yes, I am here to buy more food, what brought you here, " << this->GetName() << "?'" << std::endl;
+			std::cout << brightBlue << otherFarmer->GetName() << ": 'Yes, I am here to buy more food, what brought you here, " << this->GetName() << "?'" << resetColor << std::endl;
 			if (this->GetNameOfCurrentState() == "VisitMarketAndBuy")
 			{
-				std::cout << this->GetName() << ": 'Same as you, my friend!" << std::endl;
+				std::cout << brightBlue << this->GetName() << ": 'Same as you, my friend!'" << resetColor << std::endl;
 			}
 			else
 			{
-				std::cout << this->GetName() << ": 'I am selling some goods." << std::endl;
+				std::cout << brightBlue << this->GetName() << ": 'I am selling some goods.'" << resetColor << std::endl;
 			}
 		}
 	}
 	else if (this->GetLocation()->GetName() == "Field")
 	{
-		std::cout << this->GetName() << ": 'Hey " << otherFarmer->GetName() << "! The sun is hot today!'" << std::endl;
-		std::cout << otherFarmer->GetName() << ": 'Yes it is, but rather that than rain! don't you think, " << this->GetName() << "?'" << std::endl;
-		std::cout << this->GetName() << ": 'True!" << std::endl;
+		std::cout << brightBlue << this->GetName() << ": 'Hey " << otherFarmer->GetName() << "! The sun is hot today!'" << resetColor << std::endl;
+		std::cout << brightBlue << otherFarmer->GetName() << ": 'Yes it is, but rather that than rain! Don't you think, " << this->GetName() << "?'" << resetColor << std::endl;
+		std::cout << brightBlue << this->GetName() << ": 'True!'" << resetColor << std::endl;
 	}
 	else if (this->GetLocation()->GetName() == "Well")
 	{
-		std::cout << this->GetName() << ": 'Hey " << otherFarmer->GetName() << "! Don't we have the best water one can imagine?'" << std::endl;
-		std::cout << otherFarmer->GetName() << ": 'Most certainly " << this->GetName() << "!'" << std::endl;
+		std::cout << brightBlue << this->GetName() << ": 'Hey " << otherFarmer->GetName() << "! Don't we have the best water one can imagine?'" << resetColor << std::endl;
+		std::cout << brightBlue << otherFarmer->GetName() << ": 'Most certainly, " << this->GetName() << "!'" << resetColor << std::endl;
 	}
-	 if (this->GetLocation()->GetName() == "Pub")
+	else if (this->GetLocation()->GetName() == "Pub")
 	{
-		 std::cout << this->GetName() << ": 'Hey " << otherFarmer->GetName() << "! How Glad I am to see you here tonight!'" << std::endl;
-		 std::cout << otherFarmer->GetName() << ": 'Yeah, we both deserve this! Right " << this->GetName() << "?'" << std::endl;
-		 std::cout << this->GetName() << ": 'Indeed my friend!" << std::endl;
+		std::cout << brightBlue << this->GetName() << ": 'Hey " << otherFarmer->GetName() << "! How glad I am to see you here tonight!'" << resetColor << std::endl;
+		std::cout << brightBlue << otherFarmer->GetName() << ": 'Yeah, we both deserve this! Right, " << this->GetName() << "?'" << resetColor << std::endl;
+		std::cout << brightBlue << this->GetName() << ": 'Indeed, my friend!'" << resetColor << std::endl;
 	}
+
 	this->changeLastLocation(this->GetLocation());
+	otherFarmer->changeLastLocation(otherFarmer->GetLocation());
 }
+
+
 
 bool Farmer::CartIsFull() const
 {
@@ -520,4 +537,3 @@ bool Farmer::Only1Going(std::vector<std::unique_ptr<Farmer>>& farmers)
 	}
 	return Only1Going;
 }
-

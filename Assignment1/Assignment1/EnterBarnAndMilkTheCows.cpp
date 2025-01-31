@@ -67,8 +67,16 @@ std::string EnterBarnAndMilkTheCows::GetEvent(Farmer* pFarmer)
         {
             if (pFarmer->GetGoodsInCart() < 1)
             {
-                std::cout << pFarmer->GetName() << ": 'There is nothing more to do today! Time for fun!'" << std::endl;
-                event = "OutOfResourcesEmptyCart"; // No resources in barn and field and Cart is empty
+                if (pFarmer->InvitationAccepted() == true)
+                {
+                    std::cout << pFarmer->GetName() << ": 'There is nothing more to do today! Time for fun!'" << std::endl;
+                    event = "TimeForFun"; // No resources in barn and field and Cart is empty
+                }
+                else
+                {
+                    std::cout << pFarmer->GetName() << ": 'There is nothing more to do today! I think I can take it easy now.'" << std::endl;
+                    event = "TimeToRest";
+                }
             }
             else
             {

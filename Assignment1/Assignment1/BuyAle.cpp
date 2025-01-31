@@ -53,5 +53,8 @@ std::string BuyAle::GetEvent(Farmer* pFarmer)
 
 void BuyAle::Exit(Farmer* pFarmer, std::string nextState)
 {
-    std::cout << pFarmer->GetName() << " 'Ah that was good!'" << std::endl;
+	if (nextState != "QuenchThirst")
+	{
+		std::cout << pFarmer->GetName() << " 'Ah that was good!'" << std::endl;
+	}
 }

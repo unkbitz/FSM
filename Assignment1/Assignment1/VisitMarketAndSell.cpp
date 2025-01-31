@@ -64,8 +64,16 @@ std::string VisitMarketAndSell::GetEvent(Farmer* pFarmer)
 		}
 		else
 		{
-			std::cout << pFarmer->GetName() << ": 'Finally I am done for the day!'" << std::endl;
-			event = "SoldAll";
+			if (pFarmer->InvitationAccepted() == true)
+			{
+				std::cout << pFarmer->GetName() << ": 'Finally I am done for the day! I'll get to the pub now!'" << std::endl;
+				event = "TimeForFun";
+			}
+			else
+			{
+				std::cout << pFarmer->GetName() << ": 'Finally I am done for the day!! I think I can take it easy now.'" << std::endl;
+				event = "TimeToRest";
+			}
 		}
 	}
 	return event;

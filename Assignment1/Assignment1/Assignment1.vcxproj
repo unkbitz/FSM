@@ -134,6 +134,7 @@
     <ClCompile Include="Dead.cpp" />
     <ClCompile Include="Farmer.cpp" />
     <ClCompile Include="GameTime.cpp" />
+    <ClCompile Include="GoHomeAndChill.cpp" />
     <ClCompile Include="GoHomeAndEat.cpp" />
     <ClCompile Include="GoHomeAndSleepTilRested.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -156,6 +157,7 @@
     <ClInclude Include="BaseEntity.h" />
     <ClInclude Include="EnterBarnAndMilkTheCows.h" />
     <ClInclude Include="GameTime.h" />
+    <ClInclude Include="GoHomeAndChill.h" />
     <ClInclude Include="GoHomeAndEat.h" />
     <ClInclude Include="GoHomeAndSleepTilRested.h" />
     <ClInclude Include="Location.h" />

@@ -9,14 +9,10 @@
 
 
 // Define ANSI escape codes
-#define RESET   "\033[0m"
-#define RED     "\033[31m"
-#define GREEN   "\033[32m"
-#define YELLOW  "\033[33m"
-#define BLUE    "\033[34m"
-#define MAGENTA "\033[35m"
-#define CYAN    "\033[36m"
-#define WHITE   "\033[37m"
+const std::string brightBlue = "\033[94m";
+const std::string yellow = "\033[33m";
+const std::string green = "\033[32m";
+const std::string resetColor = "\033[0m";
 
 int main()
 {
@@ -60,8 +56,11 @@ int main()
         if (pause == false)
         {
             gameTime.Update();
-            std::cout << "\033[33mCurrent Time: " << gameTime.GetTimeString() << "\033[0m" << std::endl;
-
+            std::cout << yellow << "Current Time: " << gameTime.GetTimeString() << resetColor << std::endl;
+            for (auto& farmer : farmers)
+            {
+                farmer->SetHasBeenGreeted(false);
+            }
             for (auto& farmer : farmers)
             {
                 std::string nameOfCurrentState = farmer->GetNameOfCurrentState();
@@ -71,13 +70,15 @@ int main()
                     farmer->ProcessMessages(farmers);
                     farmer->Update(gameTime);
 
-                    for (auto& otherFarmer : farmers)
+                    if (farmer->GetLastLocation() != farmer->GetLocation() && farmer->GetNameOfCurrentState() != "GoHomeAndSleepTilRested")
                     {
-                        if (farmer != otherFarmer)
+                        for (auto& otherFarmer : farmers)
                         {
-                            if (farmer->GetLastLocation() != farmer->GetLocation())
+                            if (farmer != otherFarmer)
                             {
-                                if (farmer->GetLocation() == otherFarmer->GetLocation())
+                                if (farmer->GetLocation() == otherFarmer->GetLocation() && 
+                                    otherFarmer->HasBeenGreeted() == false && 
+                                    otherFarmer->GetNameOfCurrentState() != "GoHomeAndSleepTilRested")
                                 {
                                     farmer->Meet(otherFarmer);
                                 }
@@ -96,7 +97,7 @@ int main()
                             }
                         }
                         invitationSent = true;
-                        std::cout << "\033[32m" << farmer->GetName() << " sent invitations to the pub." << "\033[0m" << std::endl;
+                        std::cout << green << farmer->GetName() << " sent invitations to the pub." << resetColor << std::endl;
                     }
                     if (gameTime.GetHour() != 12)
                     {
@@ -159,8 +160,10 @@ int main()
                 
             }
             // Remove dead farmers from the list
-            farmers.erase(
-                std::remove_if(
+            farmers.erase
+            (
+                std::remove_if
+                (
                     farmers.begin(),
                     farmers.end(),
                     [](const std::unique_ptr<Farmer>& farmer)

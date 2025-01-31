@@ -3,6 +3,7 @@
 #include "State.h"
 #include "Farmer.h"
 #include "EnterBarnAndMilkTheCows.h"
+#include "GoHomeAndChill.h"
 #include "AtThePubWithFriends.h"
 #include "GoHomeAndSleepTilRested.h"
 #include "AtTheFieldsHarvesting.h"

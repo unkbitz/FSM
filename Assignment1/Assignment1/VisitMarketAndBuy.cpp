@@ -96,8 +96,16 @@ std::string VisitMarketAndBuy::GetEvent(Farmer* pFarmer)
 		}
 		else
 		{
-			std::cout << pFarmer->GetName() << ": 'The work is all done for the day! Time for fun!'" << std::endl;
-			event = "DoneShoping->Pub";
+			if (pFarmer->InvitationAccepted() == true)
+			{
+				std::cout << pFarmer->GetName() << ": 'The work is all done for the day! Time for fun!'" << std::endl;
+				event = "TimeForFun";
+			}
+			else
+			{
+				std::cout << pFarmer->GetName() << ": 'Finally I am done for the day!! I think I can take it easy now.'" << std::endl;
+				event = "TimeToRest";
+			}
 		}
 	}
 	else if (currentFoodAmount > 19)

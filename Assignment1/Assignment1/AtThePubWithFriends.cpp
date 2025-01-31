@@ -26,6 +26,9 @@ void AtThePubWithFriends::Enter(Farmer* pFarmer)
 void AtThePubWithFriends::Execute(Farmer* pFarmer)
 {
 	std::cout << pFarmer->GetName() << " is at the pub having fun!" << std::endl;
+	pFarmer->SetBarnHasResource(false);
+	pFarmer->SetFieldHasResource(false);
+	pFarmer->SetInvitationAccepted(false);
 }
 
 std::string AtThePubWithFriends::GetEvent(Farmer* pFarmer)

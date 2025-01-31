@@ -70,8 +70,16 @@ std::string GoHomeAndEat::GetEvent(Farmer* pFarmer)
 		}
 		else
 		{
-			std::cout << pFarmer->GetName() << ": 'There is nothing more to do today! Time for fun!'" << std::endl;
-			event = "Full";
+			if (pFarmer->InvitationAccepted() == true)
+			{
+				std::cout << pFarmer->GetName() << ": 'There is nothing more to do today! Time for fun!'" << std::endl;
+				event = "TimeForFun";
+			}
+			else
+			{
+				std::cout << pFarmer->GetName() << ": 'There is nothing more to do today! I think I can take it easy now.'" << std::endl;
+				event = "TimeToRest";
+			}
 		}
 	}
 	else if (!pFarmer->GetLocation()->HasResources())
@@ -106,7 +114,7 @@ std::string GoHomeAndEat::GetEvent(Farmer* pFarmer)
 
 void GoHomeAndEat::Exit(Farmer* pFarmer, std::string nextState)
 {
-	if (nextState != "GoHomeAndSleepTilRested")
+	if (nextState != "GoHomeAndSleepTilRested" && nextState != "GoHomeChill")
 	{
 		std::cout << pFarmer->GetName() << " is Leaving the cottage" << std::endl;
 	}

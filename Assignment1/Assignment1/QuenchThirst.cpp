@@ -60,8 +60,16 @@ std::string QuenchThirst::GetEvent(Farmer* pFarmer)
 		}
 		else
 		{
-			std::cout << pFarmer->GetName() << ": 'No more work to be done today! Time for fun!'" << std::endl;
-			event = "Unthirsty";
+			if (pFarmer->InvitationAccepted() == true)
+			{
+				std::cout << pFarmer->GetName() << ": 'No more work to be done today! Time for fun!'" << std::endl;
+				event = "TimeForFun";
+			}
+			else
+			{
+				std::cout << pFarmer->GetName() << ": 'There is nothing more to do today! I think I can take it easy now.'" << std::endl;
+				event = "TimeToRest";
+			}
 		}
 	}
 	return event;
