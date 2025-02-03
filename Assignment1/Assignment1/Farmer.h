@@ -21,7 +21,6 @@ private:
 	StateMachine<Farmer>* m_pStateMachine;
 	std::string m_name;
 	std::queue<std::string> m_messages;
-	//std::string m_cowName;
 	int m_imilkLeft;
 	int m_icropsLeft;
 	Location* m_location;
@@ -47,15 +46,14 @@ public:
 	void Update(GameTime gameTime);
 	void ChangeState(State<Farmer>* pNewState);
 	void ChangeLocation(Location* newLocation);
-	void changeLastLocation(Location* Location) { m_lastLocation = Location; }
+	void ChangeLastLocation(Location* Location) { m_lastLocation = Location; }
 	void SendMessage(Farmer& recipient, const std::string& message) const;
 	void ReceiveMessage(const std::string& message);
 	void ProcessMessages(std::vector<std::unique_ptr<Farmer>>& farmers);
 	void Meet(std::unique_ptr<Farmer>& otherFarmer);
-	std::string getNextState(const std::string& currentState, const std::string& event);
+	std::string GetNextState(const std::string& currentState, const std::string& event);
 
 	// Getters
-	StateMachine<Farmer>* GetFSM() const { return m_pStateMachine; }
 	static std::vector<StateTransition> GetStateTransitionTable() { return m_stateTransitionTable; }
 	Location* GetLocation() const { return m_location; }
 	Location* GetLastLocation() const { return m_lastLocation; }
@@ -66,6 +64,15 @@ public:
 	float GetEnergy() const { return m_fEnergy; }
 	int GetGoodsInCart() const { return m_icart; }
 	int GetGoldCoins() const { return m_iGoldCoins; }
+	bool CartIsFull() const;
+	bool Thirsty() const { return m_fThirst > 23; }
+	bool Tired() const { return m_fEnergy < 5; }
+	bool Hungry() const { return m_fHunger > 32; }
+	bool FieldHasResource() const { return m_fieldHasResource; }
+	bool BarnHasResource() const { return m_barnHasResource; }
+	bool InvitationAccepted() const { return m_invitationAccepted; }
+	bool HasBeenGreeted() const { return m_hasBeenGreeted; }
+	bool Only1Going(std::vector<std::unique_ptr<Farmer>>& farmers);
 
 	// Setters
 	void SetName(const std::string& name) { m_name = name; }
@@ -85,14 +92,4 @@ public:
 	void SpendGoldCoins(int coinsSpent) { m_iGoldCoins -= coinsSpent; }
 	void SetInvitationAccepted(bool canCome) { m_invitationAccepted = canCome; }
 
-	// Bools
-	bool CartIsFull() const;
-	bool Thirsty() const { return m_fThirst > 23; }
-	bool Tired() const { return m_fEnergy < 5; }
-	bool Hungry() const { return m_fHunger > 32; }
-	bool FieldHasResource() const { return m_fieldHasResource; }
-	bool BarnHasResource() const { return m_barnHasResource; }
-	bool InvitationAccepted() const { return m_invitationAccepted; }
-	bool HasBeenGreeted() const { return m_hasBeenGreeted; }
-	bool Only1Going(std::vector<std::unique_ptr<Farmer>>& farmers);
 };

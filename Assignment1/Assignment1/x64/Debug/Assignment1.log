@@ -1,14 +1,5 @@
-﻿  Farmer.cpp
-C:\Users\Sara_\Documents\GitHub\FSM\Assignment1\Assignment1\Farmer.h(79,51): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-  (compiling source file 'Farmer.cpp')
+﻿  Main.cpp
+C:\Users\Sara_\Documents\GitHub\FSM\Assignment1\Assignment1\Farmer.h(86,51): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+  (compiling source file 'Main.cpp')
   
-C:\Users\Sara_\Documents\GitHub\FSM\Assignment1\Assignment1\Farmer.cpp(13,11): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-C:\Users\Sara_\Documents\GitHub\FSM\Assignment1\Assignment1\Farmer.cpp(12,11): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-C:\Users\Sara_\Documents\GitHub\FSM\Assignment1\Assignment1\Farmer.cpp(14,11): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-  GoHomeAndChill.cpp
-C:\Users\Sara_\Documents\GitHub\FSM\Assignment1\Assignment1\Farmer.h(79,51): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-  (compiling source file 'GoHomeAndChill.cpp')
-  
-  StateMachine.cpp
-  Generating Code...
   Assignment1.vcxproj -> C:\Users\Sara_\Documents\GitHub\FSM\Assignment1\x64\Debug\Assignment1.exe

@@ -206,6 +206,32 @@ int main()
                     std::cout << farmer->GetName() << "'s goods: " << farmer->GetGoodsInCart() << std::endl;
                     std::cout << std::endl;
                 }
+                if (numbersOfDeadFarmers == 1)
+                {
+                    std::cout << TimeOfDeath1 << std::endl;
+                    std::cout << std::endl;
+                }
+                else if (numbersOfDeadFarmers == 2)
+                {
+                    std::cout << TimeOfDeath1 << std::endl;
+                    std::cout << TimeOfDeath2 << std::endl;
+                    std::cout << std::endl;
+                }
+                else if (numbersOfDeadFarmers == 3)
+                {
+                    std::cout << TimeOfDeath1 << std::endl;
+                    std::cout << TimeOfDeath2 << std::endl;
+                    std::cout << TimeOfDeath3 << std::endl;
+                    std::cout << std::endl;
+                }
+                else if (numbersOfDeadFarmers == 4)
+                {
+                    std::cout << TimeOfDeath1 << std::endl;
+                    std::cout << TimeOfDeath2 << std::endl;
+                    std::cout << TimeOfDeath3 << std::endl;
+                    std::cout << TimeOfDeath4 << std::endl;
+                    std::cout << std::endl;
+                }
                 statsPrinted = true; // Mark stats as printed
             }
             // Avoid busy-waiting, add a small sleep

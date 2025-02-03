@@ -66,7 +66,6 @@ std::string GoHomeAndSleepTilRested::GetEvent(Farmer* pFarmer)
 
 void GoHomeAndSleepTilRested::Exit(Farmer* pFarmer, std::string nextState)
 {
-	std::cout << pFarmer->GetName() << ": 'Time to get to work again!'" << std::endl;
 	if (nextState != "GoHomeAndEat")
 	{
 		std::cout << pFarmer->GetName() << " is Leaving the cottage" << std::endl;

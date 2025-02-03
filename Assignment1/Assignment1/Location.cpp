@@ -1,18 +1,16 @@
 #include "Location.h"
 
-Location cottage("Cottage", 0, 0, true, 20);
-Location barn("Barn", 5, 5, true, 80);
-Location market("Market", 15, 15, true, 1);
-Location field("Field", 0, 10, true, 80);
-Location well("Well", 2, 2, true, 1);
-Location pub("Pub", 0, 0, true, 1);
-Location heaven("Heaven", 1000, 1000, true, 1);
+Location cottage("Cottage", true, 20);
+Location barn("Barn", true, 80);
+Location market("Market", true, 1);
+Location field("Field", true, 80);
+Location well("Well", true, 1);
+Location pub("Pub", true, 1);
+Location heaven("Heaven", true, 1);
 
 
-Location::Location(const std::string& name, int x, int y, bool hasResources, int amountResouces) : 
+Location::Location(const std::string& name, bool hasResources, int amountResouces) : 
     m_name(name), 
-    m_x(x), 
-    m_y(y), 
     m_hasResources(hasResources), 
     m_iResourcesLeft(amountResouces), 
     m_iCrops(80), 
@@ -22,16 +20,6 @@ Location::Location(const std::string& name, int x, int y, bool hasResources, int
 std::string Location::GetName() const 
 {
     return m_name;
-}
-
-int Location::GetX() const 
-{
-    return m_x;
-}
-
-int Location::GetY() const 
-{
-    return m_y;
 }
 
 int Location::GetResources() const
@@ -84,8 +72,4 @@ void Location::IncreaseResources(int amount)
 void Location::ReplennishReshources(int amount)
 {
     m_iResourcesLeft = amount;
-}
-
-int Location::GetTravelTimeTo(const Location& other) const {
-    return std::abs(m_x - other.GetX()) + std::abs(m_y - other.GetY());
 }

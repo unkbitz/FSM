@@ -90,7 +90,7 @@ const std::vector<StateTransition> Farmer::m_stateTransitionTable =
 	{"GoHomeAndEat", "OutOfResourcesAndGoldAndNoGoodsInCart->Milk", "EnterBarnAndMilkTheCows"},
 	{"GoHomeAndEat", "OutOfResourcesAndGoldAndNoGoodsInCart->Crops", "AtTheFieldsHarvesting"},
 	{"GoHomeAndEat", "TimeForFun", "AtThePubWithFriends"},
-	{"VisitMarketAndSell", "TimeToRest", "GoHomeAndChill"},
+	{"GoHomeAndEat", "TimeToRest", "GoHomeAndChill"},
 	{"GoHomeAndEat", "Stay", "GoHomeAndEat"},
 
 	{"QuenchThirst", "Hungry", "GoHomeAndEat"},
@@ -101,8 +101,7 @@ const std::vector<StateTransition> Farmer::m_stateTransitionTable =
 	{"QuenchThirst", "UnthirstyGoodsToSel", "VisitMarketAndSell"},
 	{"QuenchThirst", "CartFull", "VisitMarketAndSell"},
 	{"QuenchThirst", "TimeForFun", "AtThePubWithFriends"},
-	{"VisitMarketAndSell", "TimeToRest", "GoHomeAndChill"},
-	{"QuenchThirst", "Stay", "QuenchThirst"},
+	{"QuenchThirst", "TimeToRest", "GoHomeAndChill"},
 
 	{"GoHomeAndSleepTilRested", "Rested", "EnterBarnAndMilkTheCows"},
 	{"GoHomeAndSleepTilRested", "Hungry", "GoHomeAndEat"},
@@ -235,7 +234,7 @@ void Farmer::Update(GameTime gameTime)
 	
 
 	// Get the next state based on the current state and event
-	std::string nextState = getNextState(GetNameOfCurrentState(), event);
+	std::string nextState = GetNextState(GetNameOfCurrentState(), event);
 
 	if (nextState != GetNameOfCurrentState()) 
 	{
@@ -284,7 +283,7 @@ void Farmer::ChangeState(State<Farmer>* pNewState)
 
 }
 
-std::string Farmer::getNextState(const std::string& currentState, const std::string& event)
+std::string Farmer::GetNextState(const std::string& currentState, const std::string& event)
 {
 	for (const auto& transition : m_stateTransitionTable)
 	{
@@ -500,8 +499,8 @@ void Farmer::Meet(std::unique_ptr<Farmer>& otherFarmer)
 		std::cout << brightBlue << this->GetName() << ": 'Indeed, my friend!'" << resetColor << std::endl;
 	}
 
-	this->changeLastLocation(this->GetLocation());
-	otherFarmer->changeLastLocation(otherFarmer->GetLocation());
+	this->ChangeLastLocation(this->GetLocation());
+	otherFarmer->ChangeLastLocation(otherFarmer->GetLocation());
 }
 
 

@@ -6,8 +6,6 @@ class Location
 {
 private:
     std::string m_name;
-    int m_x;
-    int m_y;
     bool m_hasResources;
     int m_iResourcesLeft;
     int m_iFood;
@@ -16,12 +14,10 @@ private:
 
 public:
     // Constructor
-    Location(const std::string& name, int x, int y, bool hasResources, int amountResouces);
+    Location(const std::string& name, bool hasResources, int amountResouces);
 
     // Getters
     std::string GetName() const;
-    int GetX() const;
-    int GetY() const;
     int GetResources() const;
     bool HasResources() const;
     int GetFoodMax() const;
@@ -33,9 +29,6 @@ public:
     void DecreaseResources();
     void IncreaseResources(int amount);
     void ReplennishReshources(int amount);
-
-    // Method to calculate distance between two locations
-    int GetTravelTimeTo(const Location& other) const;
 };
 
 extern Location cottage;
