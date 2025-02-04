@@ -6,9 +6,7 @@ class QuenchThirst : public State<Farmer>
 {
 private:
 	QuenchThirst() {}
-	/* copy ctor and assignment op omitted */
 public:
-	//this is a singleton
 	static QuenchThirst* Instance();
 	virtual void Enter(Farmer* pFarmer);
 	virtual void Execute(Farmer* pFarmer);

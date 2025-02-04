@@ -6,7 +6,6 @@ class AtThePubWithFriends : public State<Farmer>
 {
 private:
 	AtThePubWithFriends() {}
-	/* copy ctor and assignment op omitted */
 public:
 	static AtThePubWithFriends* Instance();
 	virtual void Enter(Farmer* pFarmer);

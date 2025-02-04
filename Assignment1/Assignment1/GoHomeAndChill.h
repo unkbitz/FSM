@@ -6,9 +6,7 @@ class GoHomeAndChill : public State<Farmer>
 {
 private:
 	GoHomeAndChill() {}
-	/* copy ctor and assignment op omitted */
 public:
-	//this is a singleton
 	static GoHomeAndChill* Instance();
 	virtual void Enter(Farmer* pFarmer);
 	virtual void Execute(Farmer* pFarmer);

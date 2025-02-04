@@ -6,7 +6,6 @@ class EnterBarnAndMilkTheCows : public State<Farmer>
 {
 private:
 	EnterBarnAndMilkTheCows() {}
-	/* copy ctor and assignment op omitted */
 public:
 	static EnterBarnAndMilkTheCows* Instance();
 	virtual void Enter(Farmer* pFarmer);

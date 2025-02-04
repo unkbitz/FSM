@@ -6,9 +6,7 @@ class BuyAle : public State<Farmer>
 {
 private:
 	BuyAle() {}
-	/* copy ctor and assignment op omitted */
 public:
-	//this is a singleton
 	static BuyAle* Instance();
 	virtual void Enter(Farmer* pFarmer);
 	virtual void Execute(Farmer* pFarmer);

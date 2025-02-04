@@ -9,6 +9,7 @@ GoHomeAndChill* GoHomeAndChill::Instance()
 
 void GoHomeAndChill::Enter(Farmer* pFarmer)
 {
+	//if farmers location is not already cottage
 	if (pFarmer->GetLocation() != &cottage)
 	{
 		std::cout << pFarmer->GetName() << " is Walking to the cottage" << std::endl;
@@ -44,6 +45,7 @@ std::string GoHomeAndChill::GetEvent(Farmer* pFarmer)
 
 void GoHomeAndChill::Exit(Farmer* pFarmer, std::string nextState)
 {
+	//Basically if farmer doesn't stay in cottage:
 	if (nextState != "GoHomeAndEat" && nextState != "GoHomeAndSleepTilRested")
 	{
 		std::cout << pFarmer->GetName() << " is Leaving the cottage" << std::endl;

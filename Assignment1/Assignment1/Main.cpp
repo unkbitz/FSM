@@ -7,29 +7,26 @@
 #include "Farmer.h"
 #include "Dead.h"
 
-
-// Define ANSI escape codes
-const std::string brightBlue = "\033[94m";
-const std::string yellow = "\033[33m";
-const std::string green = "\033[32m";
-const std::string resetColor = "\033[0m";
-
 int main()
 {
+    //create a vector of unique pointers to farmers
     std::vector<std::unique_ptr<Farmer>> farmers;
     GameTime gameTime(6, 0);
 
+    //fill vector with farmers
     farmers.emplace_back(std::make_unique<Farmer>(1, "Farmer Jenny", 3));
     farmers.emplace_back(std::make_unique<Farmer>(2, "Farmer Hank", 5));
     farmers.emplace_back(std::make_unique<Farmer>(3, "Farmer Hanna", 8));
     farmers.emplace_back(std::make_unique<Farmer>(4, "Farmer Jim", 7));
 
+    //Create local variables to use for printouts
     int numbersOfDeadFarmers = 0;
     std::string TimeOfDeath1 = "Time of death for ";
     std::string TimeOfDeath2 = "Time of death for ";
     std::string TimeOfDeath3 = "Time of death for ";
     std::string TimeOfDeath4 = "Time of death for ";
 
+    //initialise needed bools and sleepTime
     bool pause = false;
     bool statsPrinted = false;
     int sleepTime = 1000;
@@ -53,10 +50,14 @@ int main()
             }
         }
 
+        //When simulation is not paused:
         if (pause == false)
         {
+            //Update gameTime and print out the current time
             gameTime.Update();
-            std::cout << yellow << "Current Time: " << gameTime.GetTimeString() << resetColor << std::endl;
+            std::cout << "-------------------------------------------------------------------------------" << std::endl;
+            std::cout << "Current Time: " << gameTime.GetTimeString() << std::endl << std::endl;
+            //Each iteration the farmers m_hasBeenGreeted bool should be reset so they can be greeted if someone enter their location
             for (auto& farmer : farmers)
             {
                 farmer->SetHasBeenGreeted(false);
@@ -65,29 +66,36 @@ int main()
             {
                 std::string nameOfCurrentState = farmer->GetNameOfCurrentState();
                 //std::cout << "Current state: " << nameOfCurrentState << std::endl;
+                //If farmer is not dead:
                 if (nameOfCurrentState != "Dead")
                 {
+                    //Process messages
                     farmer->ProcessMessages(farmers);
+                    //Update
                     farmer->Update(gameTime);
-
+                    //If farmer changed location since last iteration and is not currently sleeping
                     if (farmer->GetLastLocation() != farmer->GetLocation() && farmer->GetNameOfCurrentState() != "GoHomeAndSleepTilRested")
                     {
+                        //Look through the pther farmers:
                         for (auto& otherFarmer : farmers)
                         {
                             if (farmer != otherFarmer)
                             {
+                                //if farmer and otherFarmer are at the same location and otherFarmer hasn't already been greeted this iteration and otherFarmer is not sleeping:
                                 if (farmer->GetLocation() == otherFarmer->GetLocation() && 
                                     otherFarmer->HasBeenGreeted() == false && 
                                     otherFarmer->GetNameOfCurrentState() != "GoHomeAndSleepTilRested")
                                 {
+                                    //farmer and otherFarmer meets and changes a few words
                                     farmer->Meet(otherFarmer);
                                 }
                             }
                         }
                     }
-
+                    //if it's 12:xx and no invitation to the pub has been sent and farmer has enough energy:
                     if (gameTime.GetHour() == 12 && invitationSent == false && farmer->GetEnergy() > 55)
                     {
+                        //Farmer send invitations to all other farmers
                         for (auto& otherFarmer : farmers)
                         {
                             if (farmer != otherFarmer)
@@ -97,12 +105,14 @@ int main()
                             }
                         }
                         invitationSent = true;
-                        std::cout << green << farmer->GetName() << " sent invitations to the pub." << resetColor << std::endl;
+                        std::cout << farmer->GetName() << " sent invitations to the pub." << std::endl;
                     }
+                    //Reset invitationsSent
                     if (gameTime.GetHour() != 12)
                     {
                         invitationSent = false;
                     }
+                    //At 19:30 all farmers notify the other that has accepted to go to the pub if they are to tierd to go or can't afford ale anyway
                     if (gameTime.GetHour() == 19 && gameTime.GetMinute() == 30 && farmer->InvitationAccepted() == true)
                     {
                         if (farmer->GetEnergy() < 5)
@@ -134,6 +144,7 @@ int main()
                             }
                         }
                     }
+                    //build printouts for dead farmers
                     std::cout << std::endl;
                     if (farmer->GetNameOfCurrentState() == "Dead") {
                         numbersOfDeadFarmers++;
@@ -234,7 +245,6 @@ int main()
                 }
                 statsPrinted = true; // Mark stats as printed
             }
-            // Avoid busy-waiting, add a small sleep
             std::this_thread::sleep_for(std::chrono::milliseconds(100));
         }
     }

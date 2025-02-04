@@ -7,9 +7,7 @@ class Dead : public State<Farmer>
 {
 private:
 	Dead() {}
-	/* copy ctor and assignment op omitted */
 public:
-	//this is a singleton
 	static Dead* Instance();
 	virtual void Enter(Farmer* pFarmer);
 	virtual void Execute(Farmer* pFarmer);

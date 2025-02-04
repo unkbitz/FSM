@@ -9,6 +9,7 @@ Dead* Dead::Instance()
 
 void Dead::Enter(Farmer* pFarmer)
 {
+    //Change location simply so that a dead farmer doesn't greet his friends if in the same location
     pFarmer->ChangeLocation(&heaven);
     std::cout << pFarmer->GetName() << " has died." << std::endl;
     if (pFarmer->GetHunger() > 34)

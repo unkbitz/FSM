@@ -17,12 +17,15 @@ void BuyAle::Enter(Farmer* pFarmer)
 
 void BuyAle::Execute(Farmer* pFarmer)
 {
+	//If farmer can afford ordering ale:
 	if (pFarmer->GetGoldCoins() > 9)
 	{
 		int moneySpent = 10;
+		//decrease thirst
 		pFarmer->IncreaseThirst(-5);
 		std::cout << pFarmer->GetName() << " spent " << moneySpent << " gold coins." << std::endl;
 		std::cout << pFarmer->GetName() << " drinks ale!" << std::endl;
+		//decrease farmers amount of gold
 		pFarmer->SpendGoldCoins(moneySpent);
 	}
 	else
@@ -38,6 +41,7 @@ std::string BuyAle::GetEvent(Farmer* pFarmer)
 	{
 		event = "Unthirsty";
 	}
+	//If farmer is still thirsty after drinking ale and can't afford more he/she gets home to drink
 	else if (pFarmer->GetGoldCoins() < 10)
 	{
 		std::cout << pFarmer->GetName() << ": 'I am still thirsty, but can't afford more ale. I need to go home.'" << std::endl;
@@ -45,7 +49,6 @@ std::string BuyAle::GetEvent(Farmer* pFarmer)
 	}
 	else
 	{
-
 		std::cout << pFarmer->GetName() << ": 'I need more!'" << std::endl;
 	}
 	return event;

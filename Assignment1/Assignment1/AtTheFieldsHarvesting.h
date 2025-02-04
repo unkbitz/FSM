@@ -6,7 +6,6 @@ class AtTheFieldsHarvesting : public State<Farmer>
 {
 private:
 	AtTheFieldsHarvesting() {}
-	/* copy ctor and assignment op omitted */
 public:
 	static AtTheFieldsHarvesting* Instance();
 	virtual void Enter(Farmer* pFarmer);
